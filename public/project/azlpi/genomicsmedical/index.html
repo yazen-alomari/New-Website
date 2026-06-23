@@ -1,0 +1,2753 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Genomics Medical PGx Goal Tracker | Alomari Associates</title>
+  <style>
+    body {
+      margin: 0;
+      background: #f6f8f6;
+    }
+  </style>
+</head>
+<body>
+<section id="pgx-goal-tracker" class="pgx-tracker" aria-label="Genomics Medical PGx laboratory goal tracker">
+  <style>
+    #pgx-goal-tracker {
+      --ink: #1f2729;
+      --muted: #657174;
+      --quiet: #8a9698;
+      --paper: #ffffff;
+      --wash: #f6f8f6;
+      --line: #dbe4e0;
+      --line-strong: #b9c8c3;
+      --teal: #0f8f7d;
+      --teal-strong: #007f6f;
+      --teal-soft: #dff4ef;
+      --coral: #d46252;
+      --coral-strong: #bd352b;
+      --coral-soft: #fae5e0;
+      --amber: #a87412;
+      --amber-soft: #f8ecd2;
+      --sage: #668a63;
+      --sage-strong: #2f7d36;
+      --sage-soft: #e5efdf;
+      --steel: #506b83;
+      --steel-soft: #e3ebf0;
+      --shadow: 0 18px 44px rgba(31, 39, 41, 0.08);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: block;
+      line-height: 1.45;
+    }
+
+    #pgx-goal-tracker * {
+      box-sizing: border-box;
+    }
+
+    #pgx-goal-tracker button,
+    #pgx-goal-tracker input,
+    #pgx-goal-tracker select,
+    #pgx-goal-tracker textarea {
+      font: inherit;
+    }
+
+    #pgx-goal-tracker .pgx-shell {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0;
+    }
+
+    #pgx-goal-tracker .pgx-header {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--teal);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 22px;
+      align-items: end;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    #pgx-goal-tracker .pgx-eyebrow {
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      margin: 0 0 8px;
+    }
+
+    #pgx-goal-tracker h1,
+    #pgx-goal-tracker h2,
+    #pgx-goal-tracker h3,
+    #pgx-goal-tracker p {
+      margin: 0;
+    }
+
+    #pgx-goal-tracker h1 {
+      font-size: 28px;
+      line-height: 1.12;
+      letter-spacing: 0;
+      max-width: 900px;
+    }
+
+    #pgx-goal-tracker .pgx-date {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    #pgx-goal-tracker .pgx-storage-strip {
+      align-items: center;
+      background: var(--wash);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      margin: 18px 0;
+      padding: 10px 12px;
+    }
+
+    #pgx-goal-tracker .pgx-storage-actions {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    #pgx-goal-tracker .pgx-storage-strip span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 720;
+    }
+
+    #pgx-goal-tracker .pgx-edit-login {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: -8px 0 16px;
+    }
+
+    #pgx-goal-tracker .pgx-edit-login[hidden] {
+      display: none;
+    }
+
+    #pgx-goal-tracker .pgx-edit-login input {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      height: 42px;
+      min-width: 220px;
+      padding: 0 12px;
+    }
+
+    #pgx-goal-tracker .pgx-edit-error {
+      color: var(--coral-strong);
+      font-size: 12px;
+      font-weight: 720;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard {
+      display: grid;
+      grid-template-columns: minmax(0, 1.16fr) minmax(320px, 0.84fr);
+      gap: 12px;
+      margin: 0 0 14px;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-main,
+    #pgx-goal-tracker .pgx-dashboard-panel,
+    #pgx-goal-tracker .pgx-add-panel {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-main {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 150px minmax(0, 1fr);
+      min-height: 240px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-main::before {
+      background: linear-gradient(180deg, var(--teal), var(--sage));
+      content: "";
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 5px;
+    }
+
+    #pgx-goal-tracker .pgx-ring {
+      align-items: center;
+      background: conic-gradient(var(--teal) var(--pgx-progress, 0%), #edf2ef 0);
+      border-radius: 999px;
+      display: flex;
+      height: 132px;
+      justify-content: center;
+      position: relative;
+      width: 132px;
+    }
+
+    #pgx-goal-tracker .pgx-ring::after {
+      background: var(--paper);
+      border-radius: inherit;
+      content: "";
+      height: 96px;
+      position: absolute;
+      width: 96px;
+    }
+
+    #pgx-goal-tracker .pgx-ring strong {
+      font-size: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-title {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0;
+      margin-bottom: 7px;
+      text-transform: uppercase;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-main h2 {
+      font-size: 24px;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-main p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-facts {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 16px;
+    }
+
+    #pgx-goal-tracker .pgx-fact {
+      background: var(--wash);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 72px;
+      padding: 10px;
+    }
+
+    #pgx-goal-tracker .pgx-fact[data-tone="teal"] {
+      background: var(--teal-soft);
+      border-color: #a9ddd1;
+    }
+
+    #pgx-goal-tracker .pgx-fact[data-tone="coral"] {
+      background: var(--coral-soft);
+      border-color: #edb5aa;
+    }
+
+    #pgx-goal-tracker .pgx-fact[data-tone="steel"] {
+      background: var(--steel-soft);
+      border-color: #c4d2db;
+    }
+
+    #pgx-goal-tracker .pgx-fact span {
+      color: var(--quiet);
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    #pgx-goal-tracker .pgx-fact strong {
+      display: block;
+      font-size: 17px;
+      line-height: 1.2;
+      margin-top: 6px;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-side {
+      display: grid;
+      gap: 12px;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-panel {
+      min-height: 114px;
+      padding: 14px;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-row {
+      align-items: start;
+      border-left: 3px solid var(--line-strong);
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 10px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      padding-left: 10px;
+      padding-top: 8px;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-row:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-row b {
+      display: block;
+      font-size: 13px;
+      line-height: 1.24;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-row span {
+      color: var(--muted);
+      display: block;
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-row[data-status="blocked"],
+    #pgx-goal-tracker .pgx-dashboard-row[data-priority="Critical"] {
+      background: linear-gradient(90deg, rgba(189, 53, 43, 0.12), transparent 74%);
+      border-left-color: var(--coral-strong);
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-row[data-status="in-progress"] {
+      background: linear-gradient(90deg, rgba(0, 127, 111, 0.12), transparent 74%);
+      border-left-color: var(--teal-strong);
+    }
+
+    #pgx-goal-tracker .pgx-dashboard-row[data-status="complete"] {
+      background: linear-gradient(90deg, rgba(47, 125, 54, 0.12), transparent 74%);
+      border-left-color: var(--sage-strong);
+    }
+
+    #pgx-goal-tracker .pgx-add-panel {
+      margin: 24px 0 0;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    #pgx-goal-tracker .pgx-add-panel[open] {
+      padding-bottom: 14px;
+    }
+
+    #pgx-goal-tracker .pgx-add-summary {
+      align-items: center;
+      cursor: pointer;
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      list-style: none;
+      min-height: 54px;
+      padding: 0 14px;
+    }
+
+    #pgx-goal-tracker .pgx-add-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    #pgx-goal-tracker .pgx-add-summary h2 {
+      font-size: 17px;
+      line-height: 1.2;
+    }
+
+    #pgx-goal-tracker .pgx-add-summary span {
+      color: var(--muted);
+      display: block;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    #pgx-goal-tracker .pgx-add-summary b {
+      background: var(--ink);
+      border-radius: 999px;
+      color: #fff;
+      display: inline-flex;
+      font-size: 18px;
+      height: 30px;
+      justify-content: center;
+      line-height: 1;
+      align-items: center;
+      width: 30px;
+    }
+
+    #pgx-goal-tracker .pgx-add-form {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr 0.8fr 0.8fr;
+      padding: 0 14px;
+    }
+
+    #pgx-goal-tracker .pgx-field {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    #pgx-goal-tracker .pgx-field label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    #pgx-goal-tracker .pgx-input,
+    #pgx-goal-tracker .pgx-textarea {
+      background: var(--wash);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      min-width: 0;
+      padding: 10px 11px;
+      width: 100%;
+    }
+
+    #pgx-goal-tracker .pgx-input {
+      height: 42px;
+    }
+
+    #pgx-goal-tracker .pgx-textarea {
+      min-height: 62px;
+      resize: vertical;
+    }
+
+    #pgx-goal-tracker .pgx-wide {
+      grid-column: span 2;
+    }
+
+    #pgx-goal-tracker .pgx-full {
+      grid-column: 1 / -1;
+    }
+
+    #pgx-goal-tracker .pgx-button-row {
+      align-items: end;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    #pgx-goal-tracker .pgx-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    #pgx-goal-tracker .pgx-metric {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 15px 16px;
+      min-height: 106px;
+      box-shadow: 0 10px 24px rgba(31, 39, 41, 0.04);
+    }
+
+    #pgx-goal-tracker .pgx-metric span {
+      color: var(--muted);
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    #pgx-goal-tracker .pgx-metric strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+      margin: 10px 0 7px;
+    }
+
+    #pgx-goal-tracker .pgx-mini-bar {
+      background: #edf2ef;
+      border-radius: 999px;
+      height: 6px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    #pgx-goal-tracker .pgx-mini-bar span {
+      background: linear-gradient(90deg, var(--teal), var(--sage));
+      display: block;
+      height: 100%;
+      width: 0;
+    }
+
+    #pgx-goal-tracker .pgx-controls {
+      align-items: center;
+      background: var(--wash);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto minmax(160px, 220px) auto;
+      gap: 10px;
+      padding: 10px;
+      margin-bottom: 22px;
+    }
+
+    #pgx-goal-tracker .pgx-search,
+    #pgx-goal-tracker .pgx-select {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      height: 42px;
+      min-width: 0;
+      padding: 0 12px;
+      width: 100%;
+    }
+
+    #pgx-goal-tracker .pgx-status-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    #pgx-goal-tracker .pgx-tab,
+    #pgx-goal-tracker .pgx-reset,
+    #pgx-goal-tracker .pgx-primary,
+    #pgx-goal-tracker .pgx-secondary,
+    #pgx-goal-tracker .pgx-complete-btn,
+    #pgx-goal-tracker .pgx-danger {
+      align-items: center;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      font-size: 13px;
+      font-weight: 750;
+      height: 42px;
+      justify-content: center;
+      padding: 0 12px;
+      white-space: nowrap;
+    }
+
+    #pgx-goal-tracker .pgx-metric {
+      position: relative;
+      overflow: hidden;
+    }
+
+    #pgx-goal-tracker .pgx-metric::before {
+      content: "";
+      height: 4px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+
+    #pgx-goal-tracker .pgx-metric[data-metric="overall"]::before {
+      background: var(--teal);
+    }
+
+    #pgx-goal-tracker .pgx-metric[data-metric="active"]::before {
+      background: var(--steel);
+    }
+
+    #pgx-goal-tracker .pgx-metric[data-metric="critical"]::before {
+      background: var(--coral);
+    }
+
+    #pgx-goal-tracker .pgx-metric[data-metric="custom"]::before {
+      background: var(--amber);
+    }
+
+    #pgx-goal-tracker .pgx-primary {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+    }
+
+    #pgx-goal-tracker .pgx-secondary {
+      color: var(--teal);
+    }
+
+    #pgx-goal-tracker .pgx-complete-btn {
+      border-color: rgba(47, 125, 54, 0.3);
+      color: var(--sage-strong);
+      height: 34px;
+      padding: 0 10px;
+    }
+
+    #pgx-goal-tracker .pgx-task[data-status="complete"] .pgx-complete-btn {
+      background: var(--sage-strong);
+      border-color: var(--sage-strong);
+      color: #fff;
+    }
+
+    #pgx-goal-tracker .pgx-danger {
+      color: var(--coral);
+      height: 34px;
+      padding: 0 10px;
+    }
+
+    #pgx-goal-tracker .pgx-tab.is-active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+    }
+
+    #pgx-goal-tracker .pgx-tab[data-status-filter="in-progress"] {
+      border-color: rgba(0, 127, 111, 0.35);
+      color: var(--teal-strong);
+    }
+
+    #pgx-goal-tracker .pgx-tab[data-status-filter="blocked"] {
+      border-color: rgba(189, 53, 43, 0.35);
+      color: var(--coral-strong);
+    }
+
+    #pgx-goal-tracker .pgx-tab[data-status-filter="complete"] {
+      border-color: rgba(47, 125, 54, 0.35);
+      color: var(--sage-strong);
+    }
+
+    #pgx-goal-tracker .pgx-tab.is-active[data-status-filter] {
+      color: #fff;
+    }
+
+    #pgx-goal-tracker .pgx-tab.is-active[data-status-filter="in-progress"] {
+      background: var(--teal-strong);
+      border-color: var(--teal-strong);
+    }
+
+    #pgx-goal-tracker .pgx-tab.is-active[data-status-filter="blocked"] {
+      background: var(--coral-strong);
+      border-color: var(--coral-strong);
+    }
+
+    #pgx-goal-tracker .pgx-tab.is-active[data-status-filter="complete"] {
+      background: var(--sage-strong);
+      border-color: var(--sage-strong);
+    }
+
+    #pgx-goal-tracker .pgx-reset {
+      color: var(--coral);
+    }
+
+    #pgx-goal-tracker .pgx-edit-only[hidden] {
+      display: none;
+    }
+
+    #pgx-goal-tracker.is-view-only .pgx-note-field textarea,
+    #pgx-goal-tracker.is-view-only .pgx-date-chip input {
+      cursor: default;
+      pointer-events: none;
+    }
+
+    #pgx-goal-tracker.is-view-only .pgx-note-field textarea {
+      background: #fff;
+      color: var(--muted);
+    }
+
+    #pgx-goal-tracker .pgx-board {
+      align-items: start;
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 24px;
+    }
+
+    #pgx-goal-tracker .pgx-sidebar {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 8px;
+      position: sticky;
+      top: 18px;
+    }
+
+    #pgx-goal-tracker .pgx-phase-button {
+      align-items: center;
+      background: transparent;
+      border: 0;
+      border-left: 3px solid transparent;
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      display: grid;
+      font-size: 13px;
+      gap: 4px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      min-height: 48px;
+      padding: 9px 10px;
+      text-align: left;
+      width: 100%;
+    }
+
+    #pgx-goal-tracker .pgx-phase-button[data-phase="regulatory"] {
+      border-left-color: var(--teal);
+    }
+
+    #pgx-goal-tracker .pgx-phase-button[data-phase="personnel"] {
+      border-left-color: var(--steel);
+    }
+
+    #pgx-goal-tracker .pgx-phase-button[data-phase="facility"],
+    #pgx-goal-tracker .pgx-phase-button[data-phase="procurement"] {
+      border-left-color: var(--amber);
+    }
+
+    #pgx-goal-tracker .pgx-phase-button[data-phase="lis"],
+    #pgx-goal-tracker .pgx-phase-button[data-phase="validation"] {
+      border-left-color: var(--coral);
+    }
+
+    #pgx-goal-tracker .pgx-phase-button[data-phase="qms"],
+    #pgx-goal-tracker .pgx-phase-button[data-phase="launch"] {
+      border-left-color: var(--sage);
+    }
+
+    #pgx-goal-tracker .pgx-phase-button:hover,
+    #pgx-goal-tracker .pgx-phase-button.is-active {
+      background: var(--wash);
+      color: var(--ink);
+    }
+
+    #pgx-goal-tracker .pgx-phase-button strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #pgx-goal-tracker .pgx-phase-button span {
+      color: var(--quiet);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    #pgx-goal-tracker .pgx-timeline {
+      position: relative;
+    }
+
+    #pgx-goal-tracker .pgx-timeline::before {
+      background: var(--line);
+      content: "";
+      height: calc(100% - 16px);
+      left: 12px;
+      position: absolute;
+      top: 8px;
+      width: 2px;
+    }
+
+    #pgx-goal-tracker .pgx-phase {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 26px minmax(0, 1fr);
+      margin-bottom: 26px;
+      position: relative;
+    }
+
+    #pgx-goal-tracker .pgx-node {
+      background: var(--paper);
+      border: 2px solid var(--teal);
+      border-radius: 999px;
+      height: 26px;
+      position: relative;
+      width: 26px;
+      z-index: 1;
+    }
+
+    #pgx-goal-tracker .pgx-phase-head {
+      align-items: center;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(140px, 220px);
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    #pgx-goal-tracker .pgx-phase-title {
+      font-size: 20px;
+      line-height: 1.18;
+    }
+
+    #pgx-goal-tracker .pgx-phase-meta {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    #pgx-goal-tracker .pgx-progress {
+      text-align: right;
+    }
+
+    #pgx-goal-tracker .pgx-progress b {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    #pgx-goal-tracker .pgx-progress-track {
+      background: #edf2ef;
+      border-radius: 999px;
+      height: 8px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    #pgx-goal-tracker .pgx-progress-fill {
+      background: linear-gradient(90deg, var(--teal), var(--sage));
+      display: block;
+      height: 100%;
+      width: 0;
+    }
+
+    #pgx-goal-tracker .pgx-task-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #pgx-goal-tracker .pgx-task {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-left: 7px solid var(--line-strong);
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(31, 39, 41, 0.04);
+      min-height: 182px;
+      padding: 14px;
+    }
+
+    #pgx-goal-tracker .pgx-task[data-status="in-progress"] {
+      background: linear-gradient(90deg, rgba(0, 127, 111, 0.2), rgba(223, 244, 239, 0.64) 32%, #fff 82%);
+      border-color: rgba(0, 127, 111, 0.3);
+      border-left-color: var(--teal-strong);
+      box-shadow: 0 14px 28px rgba(0, 127, 111, 0.11);
+    }
+
+    #pgx-goal-tracker .pgx-task[data-status="complete"] {
+      background: linear-gradient(90deg, rgba(47, 125, 54, 0.22), rgba(229, 239, 223, 0.72) 34%, #fff 82%);
+      border-color: rgba(47, 125, 54, 0.3);
+      border-left-color: var(--sage-strong);
+      box-shadow: 0 14px 28px rgba(47, 125, 54, 0.11);
+    }
+
+    #pgx-goal-tracker .pgx-task[data-status="blocked"] {
+      background: linear-gradient(90deg, rgba(189, 53, 43, 0.2), rgba(250, 229, 224, 0.7) 34%, #fff 82%);
+      border-color: rgba(189, 53, 43, 0.32);
+      border-left-color: var(--coral-strong);
+      box-shadow: 0 14px 28px rgba(189, 53, 43, 0.12);
+    }
+
+    #pgx-goal-tracker .pgx-task-top {
+      align-items: start;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: minmax(0, 1fr) 126px;
+    }
+
+    #pgx-goal-tracker .pgx-task-top-view {
+      grid-template-columns: 1fr;
+    }
+
+    #pgx-goal-tracker .pgx-task h3 {
+      font-size: 15px;
+      line-height: 1.25;
+      margin-bottom: 7px;
+    }
+
+    #pgx-goal-tracker .pgx-task p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    #pgx-goal-tracker .pgx-task-actions {
+      display: grid;
+      gap: 7px;
+      justify-items: end;
+    }
+
+    #pgx-goal-tracker .pgx-status-select {
+      appearance: none;
+      background: var(--wash);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 760;
+      height: 34px;
+      padding: 0 9px;
+      width: 126px;
+    }
+
+    #pgx-goal-tracker .pgx-status-select[data-status="complete"] {
+      background: var(--sage-strong);
+      border-color: var(--sage-strong);
+      color: #fff;
+    }
+
+    #pgx-goal-tracker .pgx-status-select[data-status="in-progress"] {
+      background: var(--teal-strong);
+      border-color: var(--teal-strong);
+      color: #fff;
+    }
+
+    #pgx-goal-tracker .pgx-status-select[data-status="blocked"] {
+      background: var(--coral-strong);
+      border-color: var(--coral-strong);
+      color: #fff;
+    }
+
+    #pgx-goal-tracker .pgx-task-meta {
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 7px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 13px;
+      padding-top: 12px;
+    }
+
+    #pgx-goal-tracker .pgx-chip {
+      align-items: center;
+      background: var(--wash);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      display: inline-flex;
+      font-size: 12px;
+      font-weight: 720;
+      gap: 6px;
+      min-height: 28px;
+      min-width: 0;
+      padding: 4px 9px;
+      width: fit-content;
+    }
+
+    #pgx-goal-tracker .pgx-chip[data-priority="Critical"] {
+      background: var(--coral-soft);
+      border-color: #edb5aa;
+      color: #a43d32;
+    }
+
+    #pgx-goal-tracker .pgx-chip[data-priority="High"] {
+      background: var(--amber-soft);
+      border-color: #dfc78a;
+      color: var(--amber);
+    }
+
+    #pgx-goal-tracker .pgx-chip[data-priority="Normal"] {
+      background: var(--steel-soft);
+      border-color: #c4d2db;
+      color: var(--steel);
+    }
+
+    #pgx-goal-tracker .pgx-chip[data-status="complete"] {
+      background: var(--sage-strong);
+      border-color: var(--sage-strong);
+      color: #fff;
+    }
+
+    #pgx-goal-tracker .pgx-chip[data-status="in-progress"] {
+      background: var(--teal-strong);
+      border-color: var(--teal-strong);
+      color: #fff;
+    }
+
+    #pgx-goal-tracker .pgx-chip[data-status="blocked"] {
+      background: var(--coral-strong);
+      border-color: var(--coral-strong);
+      color: #fff;
+    }
+
+    #pgx-goal-tracker .pgx-chip span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #pgx-goal-tracker .pgx-date-chip {
+      align-items: center;
+      background: var(--teal-soft);
+      border: 1px solid #a9ddd1;
+      border-radius: 999px;
+      color: #116d61;
+      display: inline-flex;
+      font-size: 12px;
+      font-weight: 720;
+      gap: 6px;
+      min-height: 28px;
+      padding: 3px 7px 3px 9px;
+      width: fit-content;
+    }
+
+    #pgx-goal-tracker .pgx-date-chip input {
+      appearance: none;
+      background: transparent;
+      border: 0;
+      color: inherit;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 720;
+      height: 22px;
+      min-width: 105px;
+      padding: 0;
+    }
+
+    #pgx-goal-tracker .pgx-date-chip input:disabled {
+      opacity: 1;
+    }
+
+    #pgx-goal-tracker .pgx-evidence {
+      color: var(--quiet);
+      font-size: 12px;
+      grid-column: 1 / -1;
+      min-height: 34px;
+    }
+
+    #pgx-goal-tracker .pgx-note-field {
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 6px;
+      margin-top: 12px;
+      padding-top: 11px;
+    }
+
+    #pgx-goal-tracker .pgx-note-field label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    #pgx-goal-tracker .pgx-note-field textarea {
+      background: var(--wash);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      min-height: 68px;
+      padding: 9px 10px;
+      resize: vertical;
+      width: 100%;
+    }
+
+    #pgx-goal-tracker .pgx-empty {
+      background: var(--paper);
+      border: 1px dashed var(--line-strong);
+      border-radius: 8px;
+      color: var(--muted);
+      padding: 22px;
+      text-align: center;
+    }
+
+    #pgx-goal-tracker .pgx-footnotes {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      display: grid;
+      gap: 12px;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 430px);
+      margin-top: 26px;
+      padding-top: 18px;
+    }
+
+    #pgx-goal-tracker .pgx-footnotes h2 {
+      color: var(--ink);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    #pgx-goal-tracker .pgx-footnotes p,
+    #pgx-goal-tracker .pgx-footnotes a {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    #pgx-goal-tracker .pgx-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    #pgx-goal-tracker .pgx-links a {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 9px;
+      text-decoration: none;
+    }
+
+    #pgx-goal-tracker .pgx-links a:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    @media (max-width: 980px) {
+      #pgx-goal-tracker .pgx-header,
+      #pgx-goal-tracker .pgx-dashboard,
+      #pgx-goal-tracker .pgx-board,
+      #pgx-goal-tracker .pgx-footnotes {
+        grid-template-columns: 1fr;
+      }
+
+      #pgx-goal-tracker .pgx-date {
+        text-align: left;
+      }
+
+      #pgx-goal-tracker .pgx-sidebar {
+        position: static;
+      }
+
+      #pgx-goal-tracker .pgx-controls {
+        grid-template-columns: 1fr;
+      }
+
+      #pgx-goal-tracker .pgx-add-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      #pgx-goal-tracker .pgx-shell {
+        width: min(100% - 18px, 1180px);
+        padding-top: 18px;
+      }
+
+      #pgx-goal-tracker h1 {
+        font-size: 22px;
+      }
+
+      #pgx-goal-tracker .pgx-metrics,
+      #pgx-goal-tracker .pgx-dashboard-main,
+      #pgx-goal-tracker .pgx-dashboard-facts,
+      #pgx-goal-tracker .pgx-add-form,
+      #pgx-goal-tracker .pgx-task-grid,
+      #pgx-goal-tracker .pgx-phase-head,
+      #pgx-goal-tracker .pgx-task-top {
+        grid-template-columns: 1fr;
+      }
+
+      #pgx-goal-tracker .pgx-ring {
+        height: 116px;
+        width: 116px;
+      }
+
+      #pgx-goal-tracker .pgx-ring::after {
+        height: 84px;
+        width: 84px;
+      }
+
+      #pgx-goal-tracker .pgx-wide {
+        grid-column: 1;
+      }
+
+      #pgx-goal-tracker .pgx-progress {
+        text-align: left;
+      }
+
+      #pgx-goal-tracker .pgx-status-select {
+        width: 100%;
+      }
+
+      #pgx-goal-tracker .pgx-task-actions {
+        justify-items: stretch;
+      }
+
+      #pgx-goal-tracker .pgx-task-meta {
+        grid-template-columns: 1fr;
+      }
+
+      #pgx-goal-tracker .pgx-links {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+
+  <div class="pgx-shell">
+    <header class="pgx-header">
+      <div>
+        <p class="pgx-eyebrow">Genomics Medical PGx Laboratory</p>
+        <h1>Alomari Associates - Genomics Medical Pharmacogenomics Laboratory Milestone Tracker</h1>
+      </div>
+      <p class="pgx-date" id="pgxUpdated">Updated Jun 22, 2026</p>
+    </header>
+
+    <div class="pgx-storage-strip">
+      <span id="pgxStorageState">Saved to this browser only</span>
+      <div class="pgx-storage-actions">
+        <button class="pgx-primary" id="pgxEditToggle" type="button">Edit</button>
+        <button class="pgx-secondary pgx-edit-only" id="pgxLock" type="button" hidden>Lock</button>
+        <button class="pgx-secondary pgx-edit-only" id="pgxExport" type="button" hidden>Export JSON</button>
+      </div>
+    </div>
+
+    <form class="pgx-edit-login" id="pgxEditLogin" hidden>
+      <input id="pgxEditPassword" type="password" autocomplete="current-password" placeholder="Edit password" aria-label="Edit password">
+      <button class="pgx-primary" type="submit">Unlock</button>
+      <span class="pgx-edit-error" id="pgxEditError" aria-live="polite"></span>
+    </form>
+
+    <section class="pgx-dashboard" id="pgxDashboard" aria-live="polite"></section>
+
+    <div class="pgx-metrics" id="pgxMetrics" aria-live="polite"></div>
+
+    <div class="pgx-controls">
+      <input class="pgx-search" id="pgxSearch" type="search" placeholder="Search milestones, evidence, owners" aria-label="Search milestones">
+      <div class="pgx-status-tabs" id="pgxStatusTabs" aria-label="Status filters"></div>
+      <select class="pgx-select" id="pgxOwnerFilter" aria-label="Owner filter"></select>
+      <button class="pgx-reset pgx-edit-only" id="pgxReset" type="button" hidden>Reset</button>
+    </div>
+
+    <div class="pgx-board">
+      <nav class="pgx-sidebar" id="pgxPhaseNav" aria-label="Milestone phases"></nav>
+      <main class="pgx-timeline" id="pgxTimeline"></main>
+    </div>
+
+    <footer class="pgx-footnotes">
+      <div>
+        <h2>Planning Note</h2>
+        <p>This tracker is a project-management view, not legal, regulatory, medical, reimbursement, or accreditation advice. Confirm final CLIA, Texas, payer, and accreditation requirements with the lab director, compliance counsel, Texas HHSC, CMS, and the selected accrediting organization.</p>
+      </div>
+      <div class="pgx-links" aria-label="Regulatory reference links">
+        <a href="https://www.cms.gov/medicare/quality/clinical-laboratory-improvement-amendments/apply" target="_blank" rel="noopener">CMS CLIA Apply</a>
+        <a href="https://www.cms.gov/medicare/cms-forms/cms-forms/downloads/cms116.pdf" target="_blank" rel="noopener">CMS-116</a>
+        <a href="https://www.hhs.texas.gov/regulations/forms/3000-3999/form-3225-application-certification-supplement-cms-116" target="_blank" rel="noopener">Texas Form 3225</a>
+        <a href="https://www.ecfr.gov/current/title-42/chapter-IV/subchapter-G/part-493" target="_blank" rel="noopener">42 CFR 493</a>
+      </div>
+    </footer>
+
+    <details class="pgx-add-panel pgx-edit-only" aria-labelledby="pgxAddTitle" hidden>
+      <summary class="pgx-add-summary">
+        <div>
+          <h2 id="pgxAddTitle">Add Custom Milestone</h2>
+          <span>Compact local entry for extra tasks, notes, owners, and due dates.</span>
+        </div>
+        <b aria-hidden="true">+</b>
+      </summary>
+      <form class="pgx-add-form" id="pgxAddForm">
+        <div class="pgx-field pgx-wide">
+          <label for="pgxNewTitle">Title</label>
+          <input class="pgx-input" id="pgxNewTitle" name="title" type="text" required>
+        </div>
+        <div class="pgx-field">
+          <label for="pgxNewPhase">Phase</label>
+          <select class="pgx-input" id="pgxNewPhase" name="phase" required></select>
+        </div>
+        <div class="pgx-field">
+          <label for="pgxNewOwner">Owner</label>
+          <input class="pgx-input" id="pgxNewOwner" name="owner" list="pgxOwnerOptions" value="Compliance Lead">
+          <datalist id="pgxOwnerOptions"></datalist>
+        </div>
+        <div class="pgx-field">
+          <label for="pgxNewDue">Due</label>
+          <input class="pgx-input" id="pgxNewDue" name="due" type="date" value="2026-06-30">
+        </div>
+        <div class="pgx-field">
+          <label for="pgxNewPriority">Priority</label>
+          <select class="pgx-input" id="pgxNewPriority" name="priority">
+            <option>Critical</option>
+            <option>High</option>
+            <option selected>Normal</option>
+          </select>
+        </div>
+        <div class="pgx-field">
+          <label for="pgxNewStatus">Status</label>
+          <select class="pgx-input" id="pgxNewStatus" name="status">
+            <option value="not-started" selected>Not Started</option>
+            <option value="in-progress">In Progress</option>
+            <option value="blocked">Blocked</option>
+            <option value="complete">Complete</option>
+          </select>
+        </div>
+        <div class="pgx-field pgx-wide">
+          <label for="pgxNewEvidence">Evidence</label>
+          <input class="pgx-input" id="pgxNewEvidence" name="evidence" type="text">
+        </div>
+        <div class="pgx-field pgx-wide">
+          <label for="pgxNewDetail">Detail</label>
+          <textarea class="pgx-textarea" id="pgxNewDetail" name="detail"></textarea>
+        </div>
+        <div class="pgx-field pgx-wide">
+          <label for="pgxNewNotes">Notes</label>
+          <textarea class="pgx-textarea" id="pgxNewNotes" name="notes"></textarea>
+        </div>
+        <div class="pgx-button-row pgx-full">
+          <button class="pgx-secondary" id="pgxAddClear" type="button">Clear</button>
+          <button class="pgx-primary" type="submit">Add Milestone</button>
+        </div>
+      </form>
+    </details>
+  </div>
+
+  <script>
+    (() => {
+      const root = document.getElementById("pgx-goal-tracker");
+      if (!root) return;
+
+      const storageKey = "genomicsMedicalPgxTracker.v1";
+      const sharedBackend = {
+        enabled: true,
+        supabaseUrl: "https://trhhvysidiyiutatkima.supabase.co",
+        // Paste a Supabase publishable key (sb_publishable_...) or legacy anon public key here.
+        // Never paste a secret key or service_role key into Squarespace/browser code.
+        anonKey: "sb_publishable_PJqtruIIzWF4f5C9D6zmiw_sYbgZMHT",
+        table: "pgx_tracker_state",
+        stateId: "alomari-associates-genomics-medical-pgx"
+      };
+      const editGate = {
+        enabled: true,
+        password: "Genomics",
+        sessionKey: "genomicsMedicalPgxEditUnlocked.v1"
+      };
+      const syncState = {
+        connected: false,
+        loading: false,
+        error: ""
+      };
+      const statusOptions = [
+        { value: "not-started", label: "Not Started", score: 0 },
+        { value: "in-progress", label: "In Progress", score: 0.5 },
+        { value: "blocked", label: "Blocked", score: 0.15 },
+        { value: "complete", label: "Complete", score: 1 }
+      ];
+
+      const phases = [
+        { id: "regulatory", name: "Regulatory & CLIA", target: "Submit first CLIA/Texas packet" },
+        { id: "personnel", name: "Personnel & Governance", target: "Credentialed high-complexity team" },
+        { id: "facility", name: "Facility & Safety", target: "Safe inspected lab environment" },
+        { id: "procurement", name: "Instrumentation & Supply", target: "Validated platform and supplies" },
+        { id: "lis", name: "LIS, Security & Data", target: "Traceable digital workflow" },
+        { id: "validation", name: "Validation & Assay", target: "Signed PGx validation package" },
+        { id: "qms", name: "QMS, SOPs & PT", target: "Inspection-ready quality system" },
+        { id: "launch", name: "Billing & Launch", target: "Controlled PGx go-live" }
+      ];
+
+      const owners = [
+        "Compliance Lead",
+        "Laboratory Director",
+        "Technical Supervisor",
+        "Clinical Consultant",
+        "QA Manager",
+        "Operations Lead",
+        "Safety Officer",
+        "LIS / IT Lead",
+        "Bioinformatics Lead",
+        "Billing Lead"
+      ];
+
+      const tasks = [
+        {
+          id: "reg-01",
+          phase: "regulatory",
+          title: "Lock CLIA certificate path",
+          detail: "Choose Certificate of Compliance or Certificate of Accreditation for high-complexity non-waived PGx testing.",
+          owner: "Compliance Lead",
+          due: "2026-06-24",
+          priority: "Critical",
+          status: "in-progress",
+          evidence: "Approved certificate path, accreditation decision, and director signoff."
+        },
+        {
+          id: "reg-02",
+          phase: "regulatory",
+          title: "Build CMS-116 application packet",
+          detail: "Complete Sections I-X, including ownership, director, test menu, estimated annual volume, and specialty/subspecialty selection.",
+          owner: "Compliance Lead",
+          due: "2026-06-25",
+          priority: "Critical",
+          status: "in-progress",
+          evidence: "Signed CMS-116, test volume table, and packet checklist."
+        },
+        {
+          id: "reg-03",
+          phase: "regulatory",
+          title: "Complete Texas HHSC Form 3225",
+          detail: "Prepare the Texas supplement to CMS-116 and align ownership/control details with the CMS form.",
+          owner: "Compliance Lead",
+          due: "2026-06-25",
+          priority: "Critical",
+          status: "not-started",
+          evidence: "Final Form 3225 PDF and matching ownership disclosures."
+        },
+        {
+          id: "reg-04",
+          phase: "regulatory",
+          title: "Attach lab director qualification proof",
+          detail: "Gather licensure, board certification, doctoral credentials, CV, and high-complexity qualification documentation.",
+          owner: "Laboratory Director",
+          due: "2026-06-26",
+          priority: "Critical",
+          status: "not-started",
+          evidence: "Director credential file attached to CLIA application packet."
+        },
+        {
+          id: "reg-05",
+          phase: "regulatory",
+          title: "Validate PGx test menu and CLIA volumes",
+          detail: "List analytes, platform/test system, high-complexity status, specialty/subspecialty, and estimated annual volume.",
+          owner: "Technical Supervisor",
+          due: "2026-06-27",
+          priority: "Critical",
+          status: "not-started",
+          evidence: "Test menu matrix with specialties, complexity, and annual volume assumptions."
+        },
+        {
+          id: "reg-06",
+          phase: "regulatory",
+          title: "Confirm Texas CLIA regional office",
+          detail: "Verify the correct Texas HHSC regional contact, submission channel, and any region-specific expectations.",
+          owner: "Compliance Lead",
+          due: "2026-06-28",
+          priority: "Critical",
+          status: "not-started",
+          evidence: "Email confirmation or call notes from the responsible HHSC CLIA office."
+        },
+        {
+          id: "reg-07",
+          phase: "regulatory",
+          title: "Submit CMS-116 and Texas packet",
+          detail: "Send CMS-116, Form 3225, director qualifications, and supporting documents to the State Agency.",
+          owner: "Compliance Lead",
+          due: "2026-06-30",
+          priority: "Critical",
+          status: "not-started",
+          evidence: "Submission receipt, delivery confirmation, and internal packet copy."
+        },
+        {
+          id: "reg-08",
+          phase: "regulatory",
+          title: "Track fee remittance and payment",
+          detail: "Monitor the remittance coupon, pay certificate/survey fees, and archive proof of payment.",
+          owner: "Compliance Lead",
+          due: "2026-07-10",
+          priority: "High",
+          status: "not-started",
+          evidence: "CLIA fee coupon, payment confirmation, and CLIA ID record."
+        },
+        {
+          id: "reg-09",
+          phase: "regulatory",
+          title: "Receive CLIA ID and Certificate of Registration",
+          detail: "Record certificate details and effective dates before patient testing or claims workflows proceed.",
+          owner: "Compliance Lead",
+          due: "2026-07-18",
+          priority: "High",
+          status: "not-started",
+          evidence: "CLIA certificate, ID number, effective date, expiration date, and renewal tickler."
+        },
+        {
+          id: "reg-10",
+          phase: "regulatory",
+          title: "Set survey or accreditation readiness calendar",
+          detail: "Map inspection readiness, accreditation milestones, document deadlines, and mock survey dates.",
+          owner: "QA Manager",
+          due: "2026-07-22",
+          priority: "High",
+          status: "not-started",
+          evidence: "Readiness calendar, mock survey agenda, and responsible owners."
+        },
+        {
+          id: "per-01",
+          phase: "personnel",
+          title: "Appoint high-complexity laboratory director",
+          detail: "Formalize appointment, scope, delegation plan, visit cadence, and director responsibilities.",
+          owner: "Operations Lead",
+          due: "2026-07-01",
+          priority: "Critical",
+          status: "not-started",
+          evidence: "Signed appointment letter and director responsibility checklist."
+        },
+        {
+          id: "per-02",
+          phase: "personnel",
+          title: "Appoint technical supervisor",
+          detail: "Assign qualified supervision for the PGx specialty/subspecialty and document training or experience.",
+          owner: "Laboratory Director",
+          due: "2026-07-05",
+          priority: "Critical",
+          status: "not-started",
+          evidence: "Credential review, role acceptance, and technical supervisor authorization."
+        },
+        {
+          id: "per-03",
+          phase: "personnel",
+          title: "Appoint clinical consultant",
+          detail: "Define consultation coverage for PGx interpretation, physician questions, and report nuance.",
+          owner: "Laboratory Director",
+          due: "2026-07-08",
+          priority: "High",
+          status: "not-started",
+          evidence: "Clinical consultant credentials, scope, and escalation route."
+        },
+        {
+          id: "per-04",
+          phase: "personnel",
+          title: "Appoint general supervisor",
+          detail: "Document on-site supervision coverage for high-complexity testing personnel where required.",
+          owner: "Technical Supervisor",
+          due: "2026-07-12",
+          priority: "High",
+          status: "not-started",
+          evidence: "General supervisor appointment and weekly coverage schedule."
+        },
+        {
+          id: "per-05",
+          phase: "personnel",
+          title: "Create testing authorization matrix",
+          detail: "Map each role to specimen processing, extraction, amplification, genotyping, review, and reporting privileges.",
+          owner: "QA Manager",
+          due: "2026-07-16",
+          priority: "High",
+          status: "not-started",
+          evidence: "Signed authorization matrix by test, instrument, and workflow step."
+        },
+        {
+          id: "per-06",
+          phase: "personnel",
+          title: "Complete training and competency files",
+          detail: "Build onboarding, method training, observation, blind samples, problem solving, and result review files.",
+          owner: "QA Manager",
+          due: "2026-07-26",
+          priority: "High",
+          status: "not-started",
+          evidence: "Competency folders with initial assessment and annual schedule."
+        },
+        {
+          id: "per-07",
+          phase: "personnel",
+          title: "Document director visit and delegation cadence",
+          detail: "Set director on-site visit logs, delegated duties, meeting minutes, and follow-up documentation.",
+          owner: "Laboratory Director",
+          due: "2026-07-30",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "Director calendar, delegation memo, and visit attestation template."
+        },
+        {
+          id: "fac-01",
+          phase: "facility",
+          title: "Finalize lab layout and specimen flow",
+          detail: "Separate accessioning, extraction, amplification, post-amplification, storage, and reporting workflows.",
+          owner: "Operations Lead",
+          due: "2026-07-20",
+          priority: "High",
+          status: "not-started",
+          evidence: "Approved floor plan with directional workflow and contamination controls."
+        },
+        {
+          id: "fac-02",
+          phase: "facility",
+          title: "Complete chemical hygiene plan",
+          detail: "Document hazards, storage, SDS access, spill response, disposal, and staff training.",
+          owner: "Safety Officer",
+          due: "2026-07-24",
+          priority: "High",
+          status: "not-started",
+          evidence: "Chemical hygiene plan, SDS index, and training logs."
+        },
+        {
+          id: "fac-03",
+          phase: "facility",
+          title: "Finish OSHA and hazard communication files",
+          detail: "Create bloodborne pathogen, PPE, emergency response, and hazard communication binders.",
+          owner: "Safety Officer",
+          due: "2026-07-30",
+          priority: "High",
+          status: "not-started",
+          evidence: "Safety binder, completed training, and inspection walk-through notes."
+        },
+        {
+          id: "fac-04",
+          phase: "facility",
+          title: "Establish waste and sharps protocols",
+          detail: "Set contracts and SOPs for biohazard, chemical, sharps, and document disposal streams.",
+          owner: "Operations Lead",
+          due: "2026-08-02",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "Waste vendor agreement, manifests, labels, and handling SOP."
+        },
+        {
+          id: "fac-05",
+          phase: "facility",
+          title: "Deploy environmental monitoring",
+          detail: "Set temperature logs, freezer alarms, power backup, equipment location logs, and disaster recovery steps.",
+          owner: "Safety Officer",
+          due: "2026-08-08",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "Monitoring logs, alarm tests, and backup plan."
+        },
+        {
+          id: "fac-06",
+          phase: "facility",
+          title: "Complete safety readiness walk-through",
+          detail: "Verify eyewash, spill kits, PPE, emergency exits, fire extinguishers, and signage.",
+          owner: "Safety Officer",
+          due: "2026-08-12",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "Safety punch list closed with dated photos or inspection notes."
+        },
+        {
+          id: "pro-01",
+          phase: "procurement",
+          title: "Finalize PGx platform and assay strategy",
+          detail: "Confirm genotyping platform, gene/drug panel, intended use, FDA-cleared status or LDT pathway, and limitations.",
+          owner: "Technical Supervisor",
+          due: "2026-07-18",
+          priority: "Critical",
+          status: "not-started",
+          evidence: "Platform decision memo and assay design control record."
+        },
+        {
+          id: "pro-02",
+          phase: "procurement",
+          title: "Procure major instruments",
+          detail: "Order or lease extraction, amplification, detection, quantitation, and supporting equipment.",
+          owner: "Operations Lead",
+          due: "2026-07-28",
+          priority: "High",
+          status: "not-started",
+          evidence: "Purchase orders, delivery dates, and asset IDs."
+        },
+        {
+          id: "pro-03",
+          phase: "procurement",
+          title: "Complete IQ/OQ/PQ",
+          detail: "Install, qualify, and document instrument performance before validation studies begin.",
+          owner: "Technical Supervisor",
+          due: "2026-08-12",
+          priority: "High",
+          status: "not-started",
+          evidence: "IQ/OQ/PQ packets and director approval."
+        },
+        {
+          id: "pro-04",
+          phase: "procurement",
+          title: "Procure reagents, controls, and consumables",
+          detail: "Build initial inventory with lot tracking, storage requirements, and expiration controls.",
+          owner: "Operations Lead",
+          due: "2026-08-15",
+          priority: "High",
+          status: "not-started",
+          evidence: "Inventory list, lot records, storage map, and QC material certificates."
+        },
+        {
+          id: "pro-05",
+          phase: "procurement",
+          title: "Set service contracts and PM schedule",
+          detail: "Confirm preventive maintenance, calibration, vendor support, and downtime escalation.",
+          owner: "Operations Lead",
+          due: "2026-08-20",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "Service contracts, PM calendar, and equipment maintenance logs."
+        },
+        {
+          id: "pro-06",
+          phase: "procurement",
+          title: "Finalize specimen kits and logistics",
+          detail: "Define collection kits, rejection criteria, shipping conditions, chain of custody, and accessioning labels.",
+          owner: "Operations Lead",
+          due: "2026-08-24",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "Kit bill of materials, logistics SOP, and specimen acceptance criteria."
+        },
+        {
+          id: "lis-01",
+          phase: "lis",
+          title: "Configure LIS order-to-result workflow",
+          detail: "Build test catalog, accessioning, worksheets, review states, release controls, and amendments.",
+          owner: "LIS / IT Lead",
+          due: "2026-08-05",
+          priority: "High",
+          status: "not-started",
+          evidence: "LIS build sheet and validated order-to-report test script."
+        },
+        {
+          id: "lis-02",
+          phase: "lis",
+          title: "Plan EMR and client interfaces",
+          detail: "Define HL7/API needs, client portals, result delivery, ordering provider fields, and test cancellation paths.",
+          owner: "LIS / IT Lead",
+          due: "2026-08-15",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "Interface specification and client connection tracker."
+        },
+        {
+          id: "lis-03",
+          phase: "lis",
+          title: "Complete HIPAA risk analysis",
+          detail: "Assess PHI flows across requisitions, LIS, reports, portals, storage, email, backups, and vendors.",
+          owner: "LIS / IT Lead",
+          due: "2026-08-18",
+          priority: "High",
+          status: "not-started",
+          evidence: "HIPAA risk analysis, remediation log, and BAAs."
+        },
+        {
+          id: "lis-04",
+          phase: "lis",
+          title: "Implement access controls and audit logs",
+          detail: "Use role-based access, MFA where available, approval workflows, and audit trail review.",
+          owner: "LIS / IT Lead",
+          due: "2026-08-24",
+          priority: "High",
+          status: "not-started",
+          evidence: "User role matrix, access review, and audit-log SOP."
+        },
+        {
+          id: "lis-05",
+          phase: "lis",
+          title: "Approve PGx report template",
+          detail: "Create a concise result format with genotype, phenotype, drug guidance, limitations, and references.",
+          owner: "Clinical Consultant",
+          due: "2026-09-01",
+          priority: "High",
+          status: "not-started",
+          evidence: "Director-approved report template and interpretation review record."
+        },
+        {
+          id: "lis-06",
+          phase: "lis",
+          title: "Control bioinformatics pipeline changes",
+          detail: "Document variant translation, diplotype calls, phenotype rules, reference database versions, and release notes.",
+          owner: "Bioinformatics Lead",
+          due: "2026-09-08",
+          priority: "High",
+          status: "not-started",
+          evidence: "Pipeline validation, version lock, and change-control template."
+        },
+        {
+          id: "lis-07",
+          phase: "lis",
+          title: "Validate backup and retention plan",
+          detail: "Confirm backup frequency, restoration tests, data retention, report archiving, and incident response.",
+          owner: "LIS / IT Lead",
+          due: "2026-09-12",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "Restore test log, retention policy, and incident response checklist."
+        },
+        {
+          id: "val-01",
+          phase: "validation",
+          title: "Approve validation master plan",
+          detail: "Define intended use, acceptance criteria, specimens, sample size, comparators, limitations, and signoffs.",
+          owner: "Technical Supervisor",
+          due: "2026-08-18",
+          priority: "Critical",
+          status: "not-started",
+          evidence: "Validation master plan signed by director and technical supervisor."
+        },
+        {
+          id: "val-02",
+          phase: "validation",
+          title: "Run accuracy and concordance study",
+          detail: "Compare expected genotypes or reference results across the PGx panel and key reportable variants.",
+          owner: "Technical Supervisor",
+          due: "2026-09-05",
+          priority: "High",
+          status: "not-started",
+          evidence: "Accuracy table, discordance review, and corrective actions if needed."
+        },
+        {
+          id: "val-03",
+          phase: "validation",
+          title: "Run precision and reproducibility study",
+          detail: "Assess intra-run, inter-run, operator, lot, instrument, and day-to-day reproducibility.",
+          owner: "Technical Supervisor",
+          due: "2026-09-10",
+          priority: "High",
+          status: "not-started",
+          evidence: "Precision summary with acceptance criteria met."
+        },
+        {
+          id: "val-04",
+          phase: "validation",
+          title: "Evaluate analytical sensitivity and specificity",
+          detail: "Document limit, call thresholds, interferences, cross-reactivity, and no-call behavior as applicable.",
+          owner: "Technical Supervisor",
+          due: "2026-09-16",
+          priority: "High",
+          status: "not-started",
+          evidence: "Sensitivity/specificity report with defined limitations."
+        },
+        {
+          id: "val-05",
+          phase: "validation",
+          title: "Define reportable range and reference expectations",
+          detail: "Set reportable variants, diplotypes, phenotype translations, failure modes, and non-reportable limitations.",
+          owner: "Bioinformatics Lead",
+          due: "2026-09-20",
+          priority: "High",
+          status: "not-started",
+          evidence: "Reportable range matrix and phenotype rule table."
+        },
+        {
+          id: "val-06",
+          phase: "validation",
+          title: "Validate specimen stability and transport",
+          detail: "Confirm collection media, shipping window, storage, extraction acceptance, and rejection criteria.",
+          owner: "QA Manager",
+          due: "2026-09-24",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "Stability data, transport limits, and specimen rejection SOP."
+        },
+        {
+          id: "val-07",
+          phase: "validation",
+          title: "Establish QC and control rules",
+          detail: "Define controls, frequencies, acceptance ranges, calibration, lot-to-lot checks, and corrective actions.",
+          owner: "QA Manager",
+          due: "2026-09-28",
+          priority: "High",
+          status: "not-started",
+          evidence: "QC plan, control charts, lot qualification, and fail-safe procedure."
+        },
+        {
+          id: "val-08",
+          phase: "validation",
+          title: "Sign final validation summary",
+          detail: "Compile all studies, deviations, limitations, final acceptance, and director approval before result release.",
+          owner: "Laboratory Director",
+          due: "2026-10-05",
+          priority: "Critical",
+          status: "not-started",
+          evidence: "Final validation summary signed by laboratory director."
+        },
+        {
+          id: "qms-01",
+          phase: "qms",
+          title: "Complete QMS manual",
+          detail: "Define quality organization, document hierarchy, quality indicators, responsibilities, and review cadence.",
+          owner: "QA Manager",
+          due: "2026-08-25",
+          priority: "High",
+          status: "not-started",
+          evidence: "Approved QMS manual with version control."
+        },
+        {
+          id: "qms-02",
+          phase: "qms",
+          title: "Finalize pre-analytical SOPs",
+          detail: "Cover ordering, consent where applicable, accessioning, specimen acceptance, rejection, and transport.",
+          owner: "QA Manager",
+          due: "2026-09-01",
+          priority: "High",
+          status: "not-started",
+          evidence: "Signed pre-analytical SOP set and staff attestations."
+        },
+        {
+          id: "qms-03",
+          phase: "qms",
+          title: "Finalize analytical SOPs",
+          detail: "Cover extraction, genotyping, QC, troubleshooting, contamination prevention, and instrument operation.",
+          owner: "Technical Supervisor",
+          due: "2026-09-08",
+          priority: "High",
+          status: "not-started",
+          evidence: "Signed analytical SOPs with training records."
+        },
+        {
+          id: "qms-04",
+          phase: "qms",
+          title: "Finalize post-analytical SOPs",
+          detail: "Cover review, interpretation, reporting, amendments, critical communications, retention, and consultations.",
+          owner: "Clinical Consultant",
+          due: "2026-09-14",
+          priority: "High",
+          status: "not-started",
+          evidence: "Signed post-analytical SOPs and sample reports."
+        },
+        {
+          id: "qms-05",
+          phase: "qms",
+          title: "Launch document control",
+          detail: "Implement versioning, approval, archive, staff acknowledgment, periodic review, and obsolete-copy control.",
+          owner: "QA Manager",
+          due: "2026-09-18",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "Document master index and first approval workflow."
+        },
+        {
+          id: "qms-06",
+          phase: "qms",
+          title: "Enroll in PT or alternative assessment",
+          detail: "Enroll in appropriate proficiency testing where available and define alternative assessment for ungraded PGx areas.",
+          owner: "QA Manager",
+          due: "2026-09-22",
+          priority: "High",
+          status: "not-started",
+          evidence: "PT enrollment, schedule, or alternative assessment plan."
+        },
+        {
+          id: "qms-07",
+          phase: "qms",
+          title: "Implement CAPA and nonconformance workflow",
+          detail: "Track incidents, deviations, complaints, root cause, corrective action, effectiveness, and trend review.",
+          owner: "QA Manager",
+          due: "2026-09-30",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "CAPA log, nonconformance form, and first mock record."
+        },
+        {
+          id: "qms-08",
+          phase: "qms",
+          title: "Schedule internal audit and management review",
+          detail: "Create audit plan, quality indicators, meeting cadence, and leadership review minutes template.",
+          owner: "Laboratory Director",
+          due: "2026-10-10",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "Internal audit calendar and management review agenda."
+        },
+        {
+          id: "lau-01",
+          phase: "launch",
+          title: "Confirm EIN, Type 2 NPI, and ownership records",
+          detail: "Align business identifiers across CLIA, NPPES, PECOS, payers, contracts, bank, and tax records.",
+          owner: "Billing Lead",
+          due: "2026-07-15",
+          priority: "High",
+          status: "not-started",
+          evidence: "Identifier matrix with EIN, NPI, legal name, DBA, address, and owners."
+        },
+        {
+          id: "lau-02",
+          phase: "launch",
+          title: "Submit Medicare PECOS enrollment",
+          detail: "Complete applicable Medicare enrollment workflow, supplier details, EFT, ownership, and supporting documentation.",
+          owner: "Billing Lead",
+          due: "2026-08-12",
+          priority: "High",
+          status: "not-started",
+          evidence: "PECOS submission confirmation or CMS-855B packet copy."
+        },
+        {
+          id: "lau-03",
+          phase: "launch",
+          title: "Track PTAN and MAC correspondence",
+          detail: "Monitor development requests, site visits if any, approval, PTAN issuance, and record updates.",
+          owner: "Billing Lead",
+          due: "2026-09-15",
+          priority: "High",
+          status: "not-started",
+          evidence: "MAC correspondence log, PTAN record, and revalidation tickler."
+        },
+        {
+          id: "lau-04",
+          phase: "launch",
+          title: "Build PGx coding and payer policy matrix",
+          detail: "Map CPT/PLA codes, LCDs, payer requirements, medical necessity, ABN triggers, and documentation needs.",
+          owner: "Billing Lead",
+          due: "2026-10-01",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "Coding matrix, payer notes, and requisition documentation requirements."
+        },
+        {
+          id: "lau-05",
+          phase: "launch",
+          title: "Prepare client onboarding package",
+          detail: "Finalize service agreements, requisitions, specimen instructions, report examples, support contacts, and portal access.",
+          owner: "Operations Lead",
+          due: "2026-10-15",
+          priority: "Normal",
+          status: "not-started",
+          evidence: "Client onboarding folder and signed first-client checklist."
+        },
+        {
+          id: "lau-06",
+          phase: "launch",
+          title: "Run controlled go-live",
+          detail: "Release limited PGx testing volume with director review, daily huddles, issue log, and post-launch quality review.",
+          owner: "Laboratory Director",
+          due: "2026-09-20",
+          priority: "Critical",
+          status: "not-started",
+          evidence: "First-case review, issue log closure, and launch retrospective."
+        }
+      ];
+
+      const baseTaskIds = new Set(tasks.map((task) => task.id));
+      const baseDueDates = Object.fromEntries(tasks.map((task) => [task.id, task.due]));
+      applySavedState(readStorage());
+
+      const state = {
+        status: "all",
+        phase: "all",
+        owner: "all",
+        search: "",
+        editMode: !editGate.enabled || sessionStorage.getItem(editGate.sessionKey) === "true"
+      };
+
+      const metricsEl = root.querySelector("#pgxMetrics");
+      const dashboardEl = root.querySelector("#pgxDashboard");
+      const storageStateEl = root.querySelector("#pgxStorageState");
+      const editToggleEl = root.querySelector("#pgxEditToggle");
+      const editLoginEl = root.querySelector("#pgxEditLogin");
+      const editPasswordEl = root.querySelector("#pgxEditPassword");
+      const editErrorEl = root.querySelector("#pgxEditError");
+      const lockEl = root.querySelector("#pgxLock");
+      const exportEl = root.querySelector("#pgxExport");
+      const addFormEl = root.querySelector("#pgxAddForm");
+      const addClearEl = root.querySelector("#pgxAddClear");
+      const addPhaseEl = root.querySelector("#pgxNewPhase");
+      const ownerOptionsEl = root.querySelector("#pgxOwnerOptions");
+      const phaseNavEl = root.querySelector("#pgxPhaseNav");
+      const timelineEl = root.querySelector("#pgxTimeline");
+      const tabsEl = root.querySelector("#pgxStatusTabs");
+      const searchEl = root.querySelector("#pgxSearch");
+      const ownerEl = root.querySelector("#pgxOwnerFilter");
+      const resetEl = root.querySelector("#pgxReset");
+
+      function readStorage() {
+        try {
+          return JSON.parse(localStorage.getItem(storageKey)) || {};
+        } catch (error) {
+          return {};
+        }
+      }
+
+      function buildPersistedState() {
+        const statuses = {};
+        const notes = {};
+        const dueDates = {};
+        const customTasks = [];
+        tasks.forEach((task) => {
+          statuses[task.id] = task.status;
+          notes[task.id] = task.notes || "";
+          dueDates[task.id] = task.due || "";
+          if (task.isCustom) {
+            customTasks.push({
+              id: task.id,
+              phase: task.phase,
+              title: task.title,
+              detail: task.detail,
+              owner: task.owner,
+              due: task.due,
+              priority: task.priority,
+              status: task.status,
+              evidence: task.evidence,
+              notes: task.notes || "",
+              isCustom: true
+            });
+          }
+        });
+        return { statuses, notes, dueDates, customTasks };
+      }
+
+      function writeStorage() {
+        const payload = buildPersistedState();
+        localStorage.setItem(storageKey, JSON.stringify(payload));
+        renderStorageState();
+        saveSharedState(payload);
+      }
+
+      function resetBaseTasks() {
+        for (let index = tasks.length - 1; index >= 0; index -= 1) {
+          if (!baseTaskIds.has(tasks[index].id)) {
+            tasks.splice(index, 1);
+          }
+        }
+        tasks.forEach((task) => {
+          task.status = defaultStatus(task);
+          task.notes = "";
+          task.due = baseDueDates[task.id] || task.due;
+        });
+      }
+
+      function applySavedState(saved) {
+        resetBaseTasks();
+        if (Array.isArray(saved.customTasks)) {
+          saved.customTasks.forEach((task) => {
+            tasks.push(normalizeTask(task, true));
+          });
+        }
+        tasks.forEach((task) => {
+          if (saved.statuses && saved.statuses[task.id]) {
+            task.status = saved.statuses[task.id];
+          }
+          if (saved.dueDates && saved.dueDates[task.id]) {
+            task.due = saved.dueDates[task.id];
+          }
+          task.notes = saved.notes && saved.notes[task.id] ? saved.notes[task.id] : (task.notes || "");
+        });
+      }
+
+      function sharedEnabled() {
+        return Boolean(sharedBackend.enabled && sharedBackend.supabaseUrl && sharedBackend.anonKey);
+      }
+
+      function canEdit() {
+        return Boolean(state.editMode);
+      }
+
+      function setEditMode(enabled) {
+        state.editMode = Boolean(enabled);
+        if (state.editMode) {
+          sessionStorage.setItem(editGate.sessionKey, "true");
+        } else {
+          sessionStorage.removeItem(editGate.sessionKey);
+        }
+        render();
+      }
+
+      function renderEditState() {
+        root.classList.toggle("is-view-only", !canEdit());
+        root.querySelectorAll(".pgx-edit-only").forEach((element) => {
+          element.hidden = !canEdit();
+        });
+        editToggleEl.hidden = canEdit();
+        lockEl.hidden = !canEdit();
+        exportEl.hidden = !canEdit();
+        resetEl.hidden = !canEdit();
+        editLoginEl.hidden = true;
+        editErrorEl.textContent = "";
+      }
+
+      function sharedUrl(path) {
+        return `${sharedBackend.supabaseUrl.replace(/\/$/, "")}/rest/v1/${path}`;
+      }
+
+      function sharedHeaders(extra) {
+        return {
+          apikey: sharedBackend.anonKey,
+          Authorization: `Bearer ${sharedBackend.anonKey}`,
+          "Content-Type": "application/json",
+          ...extra
+        };
+      }
+
+      async function loadSharedState() {
+        if (!sharedEnabled()) return;
+        syncState.loading = true;
+        syncState.error = "";
+        renderStorageState();
+        try {
+          const url = sharedUrl(`${encodeURIComponent(sharedBackend.table)}?id=eq.${encodeURIComponent(sharedBackend.stateId)}&select=payload`);
+          const response = await fetch(url, { headers: sharedHeaders() });
+          if (!response.ok) throw new Error(`Load failed ${response.status}`);
+          const rows = await response.json();
+          if (rows[0] && rows[0].payload) {
+            applySavedState(rows[0].payload);
+            localStorage.setItem(storageKey, JSON.stringify(rows[0].payload));
+          } else {
+            await saveSharedState(buildPersistedState(), true);
+          }
+          syncState.connected = true;
+        } catch (error) {
+          syncState.connected = false;
+          syncState.error = "Shared sync unavailable; using this browser only.";
+        } finally {
+          syncState.loading = false;
+          render();
+        }
+      }
+
+      async function saveSharedState(payload, force) {
+        if (!sharedEnabled() || (!syncState.connected && !force)) return;
+        try {
+          const url = sharedUrl(`${encodeURIComponent(sharedBackend.table)}?on_conflict=id`);
+          const response = await fetch(url, {
+            method: "POST",
+            headers: sharedHeaders({ Prefer: "resolution=merge-duplicates" }),
+            body: JSON.stringify({
+              id: sharedBackend.stateId,
+              payload,
+              updated_at: new Date().toISOString()
+            })
+          });
+          if (!response.ok) throw new Error(`Save failed ${response.status}`);
+          syncState.connected = true;
+          syncState.error = "";
+          syncState.lastSync = new Date();
+          renderStorageState();
+        } catch (error) {
+          syncState.connected = false;
+          syncState.error = "Shared save failed; changes are still saved in this browser.";
+          renderStorageState();
+        }
+      }
+
+      function todayIso() {
+        return new Date().toISOString().slice(0, 10);
+      }
+
+      function normalizeTask(task, isCustom) {
+        const phase = phases.some((item) => item.id === task.phase) ? task.phase : "regulatory";
+        const priority = ["Critical", "High", "Normal"].includes(task.priority) ? task.priority : "Normal";
+        const status = statusOptions.some((item) => item.value === task.status) ? task.status : "not-started";
+        return {
+          id: task.id || `custom-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+          phase,
+          title: String(task.title || "Untitled milestone").trim(),
+          detail: String(task.detail || "").trim(),
+          owner: String(task.owner || "Compliance Lead").trim() || "Compliance Lead",
+          due: task.due || todayIso(),
+          priority,
+          status,
+          evidence: String(task.evidence || "").trim(),
+          notes: String(task.notes || ""),
+          isCustom: Boolean(isCustom || task.isCustom)
+        };
+      }
+
+      function defaultStatus(task) {
+        return task.id === "reg-01" || task.id === "reg-02" ? "in-progress" : "not-started";
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function statusLabel(value) {
+        const found = statusOptions.find((item) => item.value === value);
+        return found ? found.label : value;
+      }
+
+      function statusScore(value) {
+        const found = statusOptions.find((item) => item.value === value);
+        return found ? found.score : 0;
+      }
+
+      function formatDate(value) {
+        if (!value) return "No date";
+        const date = new Date(value + "T12:00:00");
+        if (Number.isNaN(date.getTime())) return "No date";
+        return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      }
+
+      function phaseById(id) {
+        return phases.find((phase) => phase.id === id);
+      }
+
+      function parseDue(value) {
+        if (!value) return null;
+        const date = new Date(value + "T12:00:00");
+        return Number.isNaN(date.getTime()) ? null : date;
+      }
+
+      function daysUntil(value) {
+        const due = parseDue(value);
+        if (!due) return null;
+        const today = new Date();
+        today.setHours(12, 0, 0, 0);
+        return Math.round((due - today) / 86400000);
+      }
+
+      function dueLabel(task) {
+        const days = daysUntil(task.due);
+        if (days === null) return "No date";
+        if (days < 0) return `${Math.abs(days)}d late`;
+        if (days === 0) return "Today";
+        return `${days}d`;
+      }
+
+      function openTasks() {
+        return tasks.filter((task) => task.status !== "complete");
+      }
+
+      function sortByDue(items) {
+        return [...items].sort((a, b) => {
+          const aDue = parseDue(a.due);
+          const bDue = parseDue(b.due);
+          if (!aDue && !bDue) return a.title.localeCompare(b.title);
+          if (!aDue) return 1;
+          if (!bDue) return -1;
+          return aDue - bDue || a.title.localeCompare(b.title);
+        });
+      }
+
+      function overallProgress() {
+        if (!tasks.length) return 0;
+        const totalScore = tasks.reduce((sum, task) => sum + statusScore(task.status), 0);
+        return Math.round((totalScore / tasks.length) * 100);
+      }
+
+      function phaseProgress(phaseId) {
+        const phaseTasks = tasks.filter((task) => task.phase === phaseId);
+        if (!phaseTasks.length) return 0;
+        const total = phaseTasks.reduce((sum, task) => sum + statusScore(task.status), 0);
+        return Math.round((total / phaseTasks.length) * 100);
+      }
+
+      function allOwners() {
+        return [...new Set([...owners, ...tasks.map((task) => task.owner).filter(Boolean)])].sort((a, b) => a.localeCompare(b));
+      }
+
+      function filteredTasks() {
+        const term = state.search.trim().toLowerCase();
+        return tasks.filter((task) => {
+          const phase = phaseById(task.phase) || { name: "Unassigned" };
+          const statusMatch = state.status === "all" || task.status === state.status;
+          const phaseMatch = state.phase === "all" || task.phase === state.phase;
+          const ownerMatch = state.owner === "all" || task.owner === state.owner;
+          const termMatch = !term || [
+            task.title,
+            task.detail,
+            task.owner,
+            task.priority,
+            task.evidence,
+            task.notes,
+            phase.name
+          ].join(" ").toLowerCase().includes(term);
+          return statusMatch && phaseMatch && ownerMatch && termMatch;
+        });
+      }
+
+      function renderStorageState() {
+        const customCount = tasks.filter((task) => task.isCustom).length;
+        const noteCount = tasks.filter((task) => task.notes && task.notes.trim()).length;
+        if (syncState.loading) {
+          storageStateEl.textContent = "Connecting to shared tracker...";
+          return;
+        }
+        if (sharedEnabled() && syncState.connected) {
+          const synced = syncState.lastSync ? ` - synced ${syncState.lastSync.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}` : "";
+          storageStateEl.textContent = `Shared Supabase tracker${synced} - ${customCount} custom milestones, ${noteCount} notes`;
+          return;
+        }
+        if (syncState.error) {
+          storageStateEl.textContent = `${syncState.error} - ${customCount} custom milestones, ${noteCount} notes`;
+          return;
+        }
+        storageStateEl.textContent = `Saved only on this browser/device - ${customCount} custom milestones, ${noteCount} notes`;
+      }
+
+      function renderAddFormOptions() {
+        if (!addPhaseEl.options.length) {
+          addPhaseEl.innerHTML = phases.map((phase) => `
+            <option value="${phase.id}">${escapeHtml(phase.name)}</option>
+          `).join("");
+        }
+        ownerOptionsEl.innerHTML = allOwners().map((owner) => `<option value="${escapeHtml(owner)}"></option>`).join("");
+      }
+
+      function renderTabs() {
+        const items = [{ value: "all", label: "All" }, ...statusOptions];
+        tabsEl.innerHTML = items.map((item) => `
+          <button class="pgx-tab ${state.status === item.value ? "is-active" : ""}" type="button" data-status-filter="${item.value}">
+            ${escapeHtml(item.label)}
+          </button>
+        `).join("");
+      }
+
+      function renderOwners() {
+        const ownerList = allOwners();
+        if (state.owner !== "all" && !ownerList.includes(state.owner)) {
+          state.owner = "all";
+        }
+        ownerEl.innerHTML = [
+          "<option value=\"all\">All Owners</option>",
+          ...ownerList.map((owner) => `<option value="${escapeHtml(owner)}">${escapeHtml(owner)}</option>`)
+        ].join("");
+        ownerEl.value = state.owner;
+      }
+
+      function renderDashboard() {
+        const overall = overallProgress();
+        const complete = tasks.filter((task) => task.status === "complete").length;
+        const open = openTasks();
+        const blocked = sortByDue(open.filter((task) => task.status === "blocked"));
+        const critical = sortByDue(open.filter((task) => task.priority === "Critical"));
+        const overdue = sortByDue(open.filter((task) => {
+          const days = daysUntil(task.due);
+          return days !== null && days < 0;
+        }));
+        const dueSoon = sortByDue(open.filter((task) => {
+          const days = daysUntil(task.due);
+          return days !== null && days >= 0 && days <= 14;
+        }));
+        const nextTask = critical[0] || dueSoon[0] || sortByDue(open)[0];
+        const launchTask = tasks.find((task) => task.id === "lau-06");
+        const attentionMap = new Map();
+        [...blocked, ...overdue, ...critical].forEach((task) => attentionMap.set(task.id, task));
+        const attention = [...attentionMap.values()].slice(0, 4);
+        const nextRows = (dueSoon.length ? dueSoon : sortByDue(open)).slice(0, 4);
+
+        const renderRows = (items, emptyText) => {
+          if (!items.length) {
+            return `<div class="pgx-dashboard-row"><div><b>${escapeHtml(emptyText)}</b><span>Nothing open in this view</span></div></div>`;
+          }
+          return items.map((task) => `
+            <div class="pgx-dashboard-row" data-status="${escapeHtml(task.status)}" data-priority="${escapeHtml(task.priority)}">
+              <div>
+                <b>${escapeHtml(task.title)}</b>
+                <span>${escapeHtml(task.owner)} - ${escapeHtml(statusLabel(task.status))}</span>
+              </div>
+              <span>${escapeHtml(dueLabel(task))}</span>
+            </div>
+          `).join("");
+        };
+
+        dashboardEl.innerHTML = `
+          <article class="pgx-dashboard-main">
+            <div class="pgx-ring" style="--pgx-progress: ${overall}%"><strong>${overall}%</strong></div>
+            <div>
+              <p class="pgx-dashboard-title">Command Center</p>
+              <h2>${nextTask ? `Next: ${escapeHtml(nextTask.title)}` : "All milestones complete"}</h2>
+              <p>${nextTask ? `${escapeHtml(nextTask.owner)} - due ${escapeHtml(formatDate(nextTask.due))} - ${escapeHtml(phaseById(nextTask.phase).name)}` : "No open milestones remain."}</p>
+              <div class="pgx-dashboard-facts">
+                <div class="pgx-fact" data-tone="teal"><span>CLIA Lane</span><strong>${phaseProgress("regulatory")}%</strong></div>
+                <div class="pgx-fact" data-tone="coral"><span>Open Critical</span><strong>${critical.length}</strong></div>
+                <div class="pgx-fact" data-tone="steel"><span>Go Live</span><strong>${escapeHtml(launchTask ? formatDate(launchTask.due) : "TBD")}</strong></div>
+              </div>
+            </div>
+          </article>
+          <div class="pgx-dashboard-side">
+            <article class="pgx-dashboard-panel">
+              <p class="pgx-dashboard-title">Needs Attention</p>
+              <div class="pgx-dashboard-list">${renderRows(attention, "No current risks")}</div>
+            </article>
+            <article class="pgx-dashboard-panel">
+              <p class="pgx-dashboard-title">Next Due</p>
+              <div class="pgx-dashboard-list">${renderRows(nextRows, "No dated work")}</div>
+            </article>
+          </div>
+        `;
+      }
+
+      function renderMetrics() {
+        const complete = tasks.filter((task) => task.status === "complete").length;
+        const active = tasks.filter((task) => task.status === "in-progress").length;
+        const blocked = tasks.filter((task) => task.status === "blocked").length;
+        const criticalOpen = tasks.filter((task) => task.priority === "Critical" && task.status !== "complete").length;
+        const custom = tasks.filter((task) => task.isCustom).length;
+        const overall = overallProgress();
+
+        const metrics = [
+          { key: "overall", label: "Overall Progress", value: overall + "%", sub: `${complete} of ${tasks.length} complete`, bar: overall },
+          { key: "active", label: "Active Work", value: active, sub: "milestones in progress", bar: Math.min(100, (active / tasks.length) * 100) },
+          { key: "critical", label: "Critical Open", value: criticalOpen, sub: "must not drift", bar: Math.max(8, Math.min(100, criticalOpen * 8)) },
+          { key: "custom", label: "Custom Added", value: custom, sub: "local milestones", bar: Math.max(0, Math.min(100, custom * 14)) }
+        ];
+
+        metricsEl.innerHTML = metrics.map((metric) => `
+          <article class="pgx-metric" data-metric="${metric.key}">
+            <span>${escapeHtml(metric.label)}</span>
+            <strong>${escapeHtml(metric.value)}</strong>
+            <p>${escapeHtml(metric.sub)}</p>
+            <div class="pgx-mini-bar" aria-hidden="true"><span style="width:${metric.bar}%"></span></div>
+          </article>
+        `).join("");
+      }
+
+      function renderPhaseNav() {
+        const buttons = [
+          { id: "all", name: "All Phases", count: tasks.length, progress: Math.round((tasks.reduce((sum, task) => sum + statusScore(task.status), 0) / tasks.length) * 100) },
+          ...phases.map((phase) => ({
+            id: phase.id,
+            name: phase.name,
+            count: tasks.filter((task) => task.phase === phase.id).length,
+            progress: phaseProgress(phase.id)
+          }))
+        ];
+
+        phaseNavEl.innerHTML = buttons.map((item) => `
+          <button class="pgx-phase-button ${state.phase === item.id ? "is-active" : ""}" type="button" data-phase="${item.id}">
+            <strong>${escapeHtml(item.name)}</strong>
+            <span>${item.progress}%</span>
+            <span>${item.count} items</span>
+          </button>
+        `).join("");
+      }
+
+      function renderTask(task) {
+        const options = statusOptions.map((option) => `
+          <option value="${option.value}" ${task.status === option.value ? "selected" : ""}>${option.label}</option>
+        `).join("");
+        const customDelete = canEdit() && task.isCustom ? `<button class="pgx-danger" data-task-delete="${task.id}" type="button">Remove</button>` : "";
+        const taskActions = canEdit() ? `
+          <div class="pgx-task-actions">
+            <select class="pgx-status-select" data-task-status="${task.id}" data-status="${task.status}" aria-label="Status for ${escapeHtml(task.title)}">
+              ${options}
+            </select>
+            <button class="pgx-complete-btn" data-task-complete="${task.id}" type="button">${task.status === "complete" ? "Complete" : "Mark Complete"}</button>
+            ${customDelete}
+          </div>
+        ` : "";
+        const dueDisabled = canEdit() ? "" : "disabled";
+        const notesReadonly = canEdit() ? "" : "readonly";
+
+        return `
+          <article class="pgx-task" data-task-id="${task.id}" data-status="${task.status}">
+            <div class="pgx-task-top ${canEdit() ? "" : "pgx-task-top-view"}">
+              <div>
+                <h3>${escapeHtml(task.title)}</h3>
+                <p>${escapeHtml(task.detail)}</p>
+              </div>
+              ${taskActions}
+            </div>
+            <div class="pgx-task-meta">
+              <span class="pgx-chip"><span>${escapeHtml(task.owner)}</span></span>
+              <span class="pgx-chip" data-priority="${escapeHtml(task.priority)}"><span>${escapeHtml(task.priority)}</span></span>
+              <label class="pgx-date-chip">
+                <span>Due</span>
+                <input type="date" data-task-due="${task.id}" value="${escapeHtml(task.due || "")}" aria-label="Due date for ${escapeHtml(task.title)}" ${dueDisabled}>
+              </label>
+              <span class="pgx-chip" data-status="${escapeHtml(task.status)}"><span>${escapeHtml(statusLabel(task.status))}</span></span>
+              <p class="pgx-evidence">${escapeHtml(task.evidence)}</p>
+            </div>
+            <div class="pgx-note-field">
+              <label for="pgx-note-${escapeHtml(task.id)}">Notes</label>
+              <textarea id="pgx-note-${escapeHtml(task.id)}" data-task-note="${task.id}" placeholder="Add owner notes, blockers, links, or next steps" ${notesReadonly}>${escapeHtml(task.notes || "")}</textarea>
+            </div>
+          </article>
+        `;
+      }
+
+      function renderTimeline() {
+        const visible = filteredTasks();
+        if (!visible.length) {
+          timelineEl.innerHTML = "<div class=\"pgx-empty\">No milestones match the current view.</div>";
+          return;
+        }
+
+        timelineEl.innerHTML = phases.map((phase) => {
+          const phaseTasks = visible.filter((task) => task.phase === phase.id);
+          if (!phaseTasks.length) return "";
+          const progress = phaseProgress(phase.id);
+          const sorted = sortByDue(phaseTasks);
+
+          return `
+            <section class="pgx-phase" aria-labelledby="pgx-${phase.id}">
+              <div class="pgx-node" aria-hidden="true"></div>
+              <div>
+                <div class="pgx-phase-head">
+                  <div>
+                    <h2 class="pgx-phase-title" id="pgx-${phase.id}">${escapeHtml(phase.name)}</h2>
+                    <p class="pgx-phase-meta">${escapeHtml(phase.target)} - ${sorted.length} visible of ${tasks.filter((task) => task.phase === phase.id).length}</p>
+                  </div>
+                  <div class="pgx-progress">
+                    <b>${progress}% phase progress</b>
+                    <div class="pgx-progress-track" aria-hidden="true"><span class="pgx-progress-fill" style="width:${progress}%"></span></div>
+                  </div>
+                </div>
+                <div class="pgx-task-grid">
+                  ${sorted.map(renderTask).join("")}
+                </div>
+              </div>
+            </section>
+          `;
+        }).join("");
+      }
+
+      function render() {
+        renderEditState();
+        renderStorageState();
+        renderAddFormOptions();
+        renderTabs();
+        renderOwners();
+        renderDashboard();
+        renderMetrics();
+        renderPhaseNav();
+        renderTimeline();
+      }
+
+      tabsEl.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-status-filter]");
+        if (!button) return;
+        state.status = button.getAttribute("data-status-filter");
+        render();
+      });
+
+      phaseNavEl.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-phase]");
+        if (!button) return;
+        state.phase = button.getAttribute("data-phase");
+        render();
+      });
+
+      searchEl.addEventListener("input", (event) => {
+        state.search = event.target.value;
+        renderTimeline();
+      });
+
+      ownerEl.addEventListener("change", (event) => {
+        state.owner = event.target.value;
+        renderTimeline();
+      });
+
+      editToggleEl.addEventListener("click", () => {
+        editLoginEl.hidden = false;
+        editPasswordEl.value = "";
+        editErrorEl.textContent = "";
+        editPasswordEl.focus();
+      });
+
+      editLoginEl.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!editGate.password || editGate.password === "CHANGE_THIS_PASSWORD") {
+          editErrorEl.textContent = "Set editGate.password in the HTML first.";
+          return;
+        }
+        if (editPasswordEl.value === editGate.password) {
+          setEditMode(true);
+          return;
+        }
+        editErrorEl.textContent = "Incorrect password.";
+      });
+
+      lockEl.addEventListener("click", () => {
+        setEditMode(false);
+      });
+
+      addFormEl.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!canEdit()) return;
+        const formData = new FormData(addFormEl);
+        const title = String(formData.get("title") || "").trim();
+        if (!title) return;
+        const task = normalizeTask({
+          phase: formData.get("phase"),
+          title,
+          detail: formData.get("detail"),
+          owner: formData.get("owner"),
+          due: formData.get("due"),
+          priority: formData.get("priority"),
+          status: formData.get("status"),
+          evidence: formData.get("evidence"),
+          notes: formData.get("notes")
+        }, true);
+        tasks.push(task);
+        state.phase = task.phase;
+        addFormEl.reset();
+        writeStorage();
+        render();
+      });
+
+      addClearEl.addEventListener("click", () => {
+        if (!canEdit()) return;
+        addFormEl.reset();
+      });
+
+      exportEl.addEventListener("click", () => {
+        if (!canEdit()) return;
+        const payload = {
+          exportedAt: new Date().toISOString(),
+          tasks: tasks.map((task) => ({
+            id: task.id,
+            phase: task.phase,
+            title: task.title,
+            detail: task.detail,
+            owner: task.owner,
+            due: task.due,
+            priority: task.priority,
+            status: task.status,
+            evidence: task.evidence,
+            notes: task.notes || "",
+            isCustom: Boolean(task.isCustom)
+          }))
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "genomics-medical-pgx-tracker.json";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(link.href);
+      });
+
+      timelineEl.addEventListener("change", (event) => {
+        if (!canEdit()) return;
+        const due = event.target.closest("[data-task-due]");
+        if (due) {
+          const task = tasks.find((item) => item.id === due.getAttribute("data-task-due"));
+          if (!task) return;
+          task.due = due.value;
+          writeStorage();
+          render();
+          return;
+        }
+
+        const select = event.target.closest("[data-task-status]");
+        if (!select) return;
+        const task = tasks.find((item) => item.id === select.getAttribute("data-task-status"));
+        if (!task) return;
+        task.status = select.value;
+        writeStorage();
+        render();
+      });
+
+      timelineEl.addEventListener("input", (event) => {
+        if (!canEdit()) return;
+        const note = event.target.closest("[data-task-note]");
+        if (!note) return;
+        const task = tasks.find((item) => item.id === note.getAttribute("data-task-note"));
+        if (!task) return;
+        task.notes = note.value;
+        writeStorage();
+      });
+
+      timelineEl.addEventListener("click", (event) => {
+        if (!canEdit()) return;
+        const complete = event.target.closest("[data-task-complete]");
+        if (complete) {
+          const task = tasks.find((item) => item.id === complete.getAttribute("data-task-complete"));
+          if (!task) return;
+          task.status = "complete";
+          writeStorage();
+          render();
+          return;
+        }
+
+        const remove = event.target.closest("[data-task-delete]");
+        if (remove) {
+          const taskIndex = tasks.findIndex((item) => item.id === remove.getAttribute("data-task-delete") && item.isCustom);
+          if (taskIndex === -1) return;
+          if (!window.confirm("Remove this custom milestone?")) return;
+          tasks.splice(taskIndex, 1);
+          writeStorage();
+          render();
+        }
+      });
+
+      resetEl.addEventListener("click", () => {
+        if (!canEdit()) return;
+        localStorage.removeItem(storageKey);
+        applySavedState({});
+        state.status = "all";
+        state.phase = "all";
+        state.owner = "all";
+        state.search = "";
+        searchEl.value = "";
+        writeStorage();
+        render();
+      });
+
+      render();
+      loadSharedState();
+    })();
+  </script>
+</section>
+</body>
+</html>

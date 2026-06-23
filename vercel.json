@@ -2,5 +2,15 @@
   "framework": "vite",
   "installCommand": "pnpm install",
   "buildCommand": "pnpm build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/project/azlpi/genomicsmedical",
+      "destination": "/project/azlpi/genomicsmedical/index.html"
+    },
+    {
+      "source": "/project/azlpi/genomicsmedical/",
+      "destination": "/project/azlpi/genomicsmedical/index.html"
+    }
+  ]
 }
