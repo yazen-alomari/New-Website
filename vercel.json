@@ -11,6 +11,14 @@
     {
       "source": "/project/azlpi/genomicsmedical/",
       "destination": "/project/azlpi/genomicsmedical/index.html"
+    },
+    {
+      "source": "/deengarden/contact",
+      "destination": "/deengarden/contact/index.html"
+    },
+    {
+      "source": "/deengarden/contact/",
+      "destination": "/deengarden/contact/index.html"
     }
   ]
 }
