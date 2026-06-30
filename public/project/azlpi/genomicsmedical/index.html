@@ -588,6 +588,12 @@
       color: var(--teal);
     }
 
+    #pgx-goal-tracker .pgx-requisition-btn {
+      background: var(--teal-strong);
+      border-color: var(--teal-strong);
+      color: #fff;
+    }
+
     #pgx-goal-tracker .pgx-complete-btn {
       border-color: rgba(47, 125, 54, 0.3);
       color: var(--sage-strong);
@@ -664,6 +670,234 @@
     #pgx-goal-tracker.is-view-only .pgx-note-field textarea {
       background: #fff;
       color: var(--muted);
+    }
+
+    #pgx-goal-tracker .pgx-req-modal[hidden] {
+      display: none;
+    }
+
+    #pgx-goal-tracker .pgx-req-modal {
+      align-items: flex-start;
+      background: rgba(31, 39, 41, 0.48);
+      display: flex;
+      inset: 0;
+      justify-content: center;
+      overflow: auto;
+      padding: 28px 14px;
+      position: fixed;
+      z-index: 9999;
+    }
+
+    #pgx-goal-tracker .pgx-req-panel {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 30px 80px rgba(31, 39, 41, 0.24);
+      max-width: 1040px;
+      overflow: hidden;
+      width: min(100%, 1040px);
+    }
+
+    #pgx-goal-tracker .pgx-req-header {
+      align-items: start;
+      background: linear-gradient(135deg, #f8fbfa, #edf5f2);
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 16px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      padding: 20px;
+    }
+
+    #pgx-goal-tracker .pgx-req-kicker {
+      color: var(--teal-strong);
+      font-size: 12px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    #pgx-goal-tracker .pgx-req-header h2 {
+      font-size: 25px;
+      line-height: 1.16;
+      margin-top: 5px;
+    }
+
+    #pgx-goal-tracker .pgx-req-header p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 7px;
+      max-width: 760px;
+    }
+
+    #pgx-goal-tracker .pgx-req-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    #pgx-goal-tracker .pgx-req-body {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    #pgx-goal-tracker .pgx-req-alert {
+      background: var(--amber-soft);
+      border: 1px solid #dfc78a;
+      border-radius: 8px;
+      color: #694c10;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px 12px;
+    }
+
+    #pgx-goal-tracker .pgx-req-section {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    #pgx-goal-tracker .pgx-req-section-head {
+      align-items: center;
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    #pgx-goal-tracker .pgx-req-section h3 {
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    #pgx-goal-tracker .pgx-req-section-head span {
+      color: var(--quiet);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    #pgx-goal-tracker .pgx-req-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    #pgx-goal-tracker .pgx-req-field {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    #pgx-goal-tracker .pgx-req-field label,
+    #pgx-goal-tracker .pgx-req-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    #pgx-goal-tracker .pgx-req-field input,
+    #pgx-goal-tracker .pgx-req-field select,
+    #pgx-goal-tracker .pgx-req-field textarea {
+      background: var(--wash);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      min-width: 0;
+      padding: 10px 11px;
+      width: 100%;
+    }
+
+    #pgx-goal-tracker .pgx-req-field input,
+    #pgx-goal-tracker .pgx-req-field select {
+      height: 40px;
+    }
+
+    #pgx-goal-tracker .pgx-req-field textarea {
+      min-height: 84px;
+      resize: vertical;
+    }
+
+    #pgx-goal-tracker .pgx-req-span-2 {
+      grid-column: span 2;
+    }
+
+    #pgx-goal-tracker .pgx-req-span-3 {
+      grid-column: span 3;
+    }
+
+    #pgx-goal-tracker .pgx-req-full {
+      grid-column: 1 / -1;
+    }
+
+    #pgx-goal-tracker .pgx-req-checkgrid {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #pgx-goal-tracker .pgx-req-check {
+      align-items: start;
+      background: var(--wash);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 18px minmax(0, 1fr);
+      min-height: 46px;
+      padding: 10px;
+    }
+
+    #pgx-goal-tracker .pgx-req-check input {
+      accent-color: var(--teal-strong);
+      height: 16px;
+      margin: 2px 0 0;
+      width: 16px;
+    }
+
+    #pgx-goal-tracker .pgx-req-check strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    #pgx-goal-tracker .pgx-req-check span {
+      color: var(--muted);
+      display: block;
+      font-size: 12px;
+      line-height: 1.3;
+      margin-top: 2px;
+    }
+
+    #pgx-goal-tracker .pgx-req-note {
+      background: var(--teal-soft);
+      border: 1px solid #a9ddd1;
+      border-radius: 8px;
+      color: #116d61;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px 12px;
+    }
+
+    #pgx-goal-tracker .pgx-req-signature {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1.4fr 0.8fr 0.8fr;
+      margin-top: 12px;
+      padding-top: 12px;
+    }
+
+    #pgx-goal-tracker .pgx-req-sign-line {
+      border-bottom: 1px solid var(--line-strong);
+      min-height: 34px;
+    }
+
+    #pgx-goal-tracker .pgx-req-print-title {
+      display: none;
     }
 
     #pgx-goal-tracker .pgx-board {
@@ -1117,6 +1351,18 @@
         grid-template-columns: 1fr;
       }
 
+      #pgx-goal-tracker .pgx-req-header,
+      #pgx-goal-tracker .pgx-req-grid,
+      #pgx-goal-tracker .pgx-req-signature {
+        grid-template-columns: 1fr;
+      }
+
+      #pgx-goal-tracker .pgx-req-span-2,
+      #pgx-goal-tracker .pgx-req-span-3,
+      #pgx-goal-tracker .pgx-req-full {
+        grid-column: 1;
+      }
+
       #pgx-goal-tracker .pgx-add-form {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -1175,6 +1421,94 @@
       #pgx-goal-tracker .pgx-links {
         justify-content: flex-start;
       }
+
+      #pgx-goal-tracker .pgx-req-modal {
+        padding: 0;
+      }
+
+      #pgx-goal-tracker .pgx-req-panel {
+        border-radius: 0;
+        min-height: 100vh;
+      }
+
+      #pgx-goal-tracker .pgx-req-checkgrid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      @page {
+        margin: 0.45in;
+      }
+
+      body.pgx-printing * {
+        visibility: hidden !important;
+      }
+
+      body.pgx-printing #pgxReqModal,
+      body.pgx-printing #pgxReqModal * {
+        visibility: visible !important;
+      }
+
+      body.pgx-printing #pgx-goal-tracker .pgx-shell {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+
+      body.pgx-printing #pgx-goal-tracker .pgx-shell > :not(#pgxReqModal) {
+        display: none !important;
+      }
+
+      body.pgx-printing #pgxReqModal {
+        background: #fff !important;
+        display: block !important;
+        inset: auto !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        position: static !important;
+        z-index: 99999 !important;
+      }
+
+      body.pgx-printing #pgxReqModal .pgx-req-panel {
+        border: 0 !important;
+        box-shadow: none !important;
+        max-width: none !important;
+        width: 100% !important;
+      }
+
+      body.pgx-printing #pgxReqModal .pgx-req-header {
+        background: #fff !important;
+        border-bottom: 2px solid #1f2729 !important;
+        grid-template-columns: 1fr !important;
+        padding: 0 0 12px !important;
+      }
+
+      body.pgx-printing #pgxReqModal .pgx-req-actions,
+      body.pgx-printing #pgxReqModal .pgx-req-alert {
+        display: none !important;
+      }
+
+      body.pgx-printing #pgxReqModal .pgx-req-body {
+        gap: 9px !important;
+        padding: 12px 0 0 !important;
+      }
+
+      body.pgx-printing #pgxReqModal .pgx-req-section {
+        break-inside: avoid;
+        box-shadow: none !important;
+        padding: 10px !important;
+      }
+
+      body.pgx-printing #pgxReqModal .pgx-req-print-title {
+        display: block !important;
+      }
+
+      body.pgx-printing #pgxReqModal input,
+      body.pgx-printing #pgxReqModal select,
+      body.pgx-printing #pgxReqModal textarea {
+        background: #fff !important;
+      }
     }
   </style>
 
@@ -1190,6 +1524,7 @@
     <div class="pgx-storage-strip">
       <span id="pgxStorageState">Saved to this browser only</span>
       <div class="pgx-storage-actions">
+        <button class="pgx-secondary pgx-requisition-btn" id="pgxRequisition" type="button">Requisition</button>
         <button class="pgx-primary" id="pgxEditToggle" type="button">Edit</button>
         <button class="pgx-secondary pgx-edit-only" id="pgxLock" type="button" hidden>Lock</button>
         <button class="pgx-secondary pgx-edit-only" id="pgxExport" type="button" hidden>Export JSON</button>
@@ -1201,6 +1536,327 @@
       <button class="pgx-primary" type="submit">Unlock</button>
       <span class="pgx-edit-error" id="pgxEditError" aria-live="polite"></span>
     </form>
+
+    <section class="pgx-req-modal" id="pgxReqModal" role="dialog" aria-modal="true" aria-labelledby="pgxReqTitle" hidden>
+      <div class="pgx-req-panel">
+        <div class="pgx-req-header">
+          <div>
+            <p class="pgx-req-kicker">Electronic Requisition</p>
+            <h2 id="pgxReqTitle">Genomics Medical Pharmacogenomics Requisition</h2>
+            <p>Clinician order form for PGx testing, specimen documentation, clinical indication, medication context, consent confirmation, and provider medical necessity attestation.</p>
+          </div>
+          <div class="pgx-req-actions">
+            <button class="pgx-secondary" id="pgxReqClear" type="button">Clear</button>
+            <button class="pgx-secondary" id="pgxReqPrint" type="button">Print / PDF</button>
+            <button class="pgx-primary" id="pgxReqClose" type="button">Close</button>
+          </div>
+        </div>
+
+        <form class="pgx-req-body" id="pgxReqForm" autocomplete="off">
+          <div class="pgx-req-alert">
+            HIPAA Notice: this form is fillable for viewing, printing, or saving as PDF only. The tracker does not submit, store, or sync requisition entries. Do not collect real patient data through Squarespace or Supabase unless a HIPAA-compliant intake system, BAA, access control, retention policy, and lab approval workflow are in place.
+          </div>
+
+          <section class="pgx-req-section">
+            <div class="pgx-req-section-head">
+              <h3>Ordering Provider</h3>
+              <span>Required</span>
+            </div>
+            <div class="pgx-req-grid">
+              <div class="pgx-req-field pgx-req-span-2">
+                <label for="pgxReqProviderName">Provider Name</label>
+                <input id="pgxReqProviderName" name="provider_name" type="text">
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqNpi">NPI</label>
+                <input id="pgxReqNpi" name="npi" type="text" inputmode="numeric">
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqProviderPhone">Phone</label>
+                <input id="pgxReqProviderPhone" name="provider_phone" type="tel">
+              </div>
+              <div class="pgx-req-field pgx-req-span-2">
+                <label for="pgxReqPractice">Practice / Facility</label>
+                <input id="pgxReqPractice" name="practice" type="text">
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqProviderFax">Fax</label>
+                <input id="pgxReqProviderFax" name="provider_fax" type="tel">
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqProviderEmail">Email</label>
+                <input id="pgxReqProviderEmail" name="provider_email" type="email">
+              </div>
+              <div class="pgx-req-field pgx-req-full">
+                <label for="pgxReqProviderAddress">Practice Address</label>
+                <input id="pgxReqProviderAddress" name="provider_address" type="text">
+              </div>
+            </div>
+          </section>
+
+          <section class="pgx-req-section">
+            <div class="pgx-req-section-head">
+              <h3>Patient Information</h3>
+              <span>Required for live use</span>
+            </div>
+            <div class="pgx-req-grid">
+              <div class="pgx-req-field pgx-req-span-2">
+                <label for="pgxReqPatientName">Patient Name</label>
+                <input id="pgxReqPatientName" name="patient_name" type="text">
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqDob">Date of Birth</label>
+                <input id="pgxReqDob" name="dob" type="date">
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqSex">Sex at Birth</label>
+                <select id="pgxReqSex" name="sex">
+                  <option value=""></option>
+                  <option>Female</option>
+                  <option>Male</option>
+                  <option>Intersex</option>
+                  <option>Not specified</option>
+                </select>
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqMrn">MRN / Account</label>
+                <input id="pgxReqMrn" name="mrn" type="text">
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqPhone">Patient Phone</label>
+                <input id="pgxReqPhone" name="patient_phone" type="tel">
+              </div>
+              <div class="pgx-req-field pgx-req-span-2">
+                <label for="pgxReqEmail">Patient Email</label>
+                <input id="pgxReqEmail" name="patient_email" type="email">
+              </div>
+              <div class="pgx-req-field pgx-req-full">
+                <label for="pgxReqPatientAddress">Patient Address</label>
+                <input id="pgxReqPatientAddress" name="patient_address" type="text">
+              </div>
+            </div>
+          </section>
+
+          <section class="pgx-req-section">
+            <div class="pgx-req-section-head">
+              <h3>Specimen</h3>
+              <span>Accessioning</span>
+            </div>
+            <div class="pgx-req-grid">
+              <div class="pgx-req-field">
+                <label for="pgxReqSpecimenType">Specimen Type</label>
+                <select id="pgxReqSpecimenType" name="specimen_type">
+                  <option></option>
+                  <option>Buccal swab</option>
+                  <option>Saliva</option>
+                  <option>Whole blood - EDTA</option>
+                  <option>Extracted DNA</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqCollectedDate">Collected Date</label>
+                <input id="pgxReqCollectedDate" name="collected_date" type="date">
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqCollectedTime">Collected Time</label>
+                <input id="pgxReqCollectedTime" name="collected_time" type="time">
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqCollector">Collector Initials</label>
+                <input id="pgxReqCollector" name="collector" type="text">
+              </div>
+              <div class="pgx-req-field pgx-req-span-2">
+                <label for="pgxReqSpecimenId">Specimen ID / Barcode</label>
+                <input id="pgxReqSpecimenId" name="specimen_id" type="text">
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqTransport">Transport</label>
+                <select id="pgxReqTransport" name="transport">
+                  <option></option>
+                  <option>Room temperature</option>
+                  <option>Refrigerated</option>
+                  <option>Frozen</option>
+                  <option>Courier</option>
+                </select>
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqReceived">Received Date</label>
+                <input id="pgxReqReceived" name="received_date" type="date">
+              </div>
+              <div class="pgx-req-field pgx-req-full">
+                <label for="pgxReqSpecimenNotes">Specimen Notes / Rejection Review</label>
+                <textarea id="pgxReqSpecimenNotes" name="specimen_notes"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="pgx-req-section">
+            <div class="pgx-req-section-head">
+              <h3>Test Requested</h3>
+              <span>PGx Menu</span>
+            </div>
+            <div class="pgx-req-checkgrid">
+              <label class="pgx-req-check">
+                <input type="checkbox" name="test_core_panel">
+                <span><strong>Veridose Core PGx Panel</strong><span>ABCB1, APOE, COMT, CYP1A2, CYP2B6, CYP2C19, CYP2C9, VKORC1, CYP2D6, CYP3A4, CYP3A5, DRD2, F2, F5, GLP1R, MTHFR, OPRM1, PNPLA5, SLCO1B1, SULT4A1.</span></span>
+              </label>
+              <label class="pgx-req-check">
+                <input type="checkbox" name="test_cyp2d6_cnv">
+                <span><strong>CYP2D6 CNV / Hybrid Add-On</strong><span>Supplemental CYP2D6 copy-number and hybrid allele assay, including common calls such as *13, *36, *4N, and *68.</span></span>
+              </label>
+              <label class="pgx-req-check">
+                <input type="checkbox" name="test_reflex_cnv">
+                <span><strong>Reflex CYP2D6 CNV if Indicated</strong><span>Perform CNV/hybrid testing when ordered criteria, no-call rules, or director-approved workflow calls for follow-up.</span></span>
+              </label>
+              <label class="pgx-req-check">
+                <input type="checkbox" name="test_other">
+                <span><strong>Other Approved PGx Order</strong><span>Use only with lab director approval, controlled test menu, and documented reportable range.</span></span>
+              </label>
+            </div>
+            <div class="pgx-req-note">
+              Panel language should be finalized against the validated reportable range, current assay definition files, and the laboratory director-approved test catalog before clinical launch.
+            </div>
+          </section>
+
+          <section class="pgx-req-section">
+            <div class="pgx-req-section-head">
+              <h3>Clinical Information</h3>
+              <span>Medical necessity</span>
+            </div>
+            <div class="pgx-req-grid">
+              <div class="pgx-req-field pgx-req-span-2">
+                <label for="pgxReqIcd10">ICD-10 Code(s)</label>
+                <input id="pgxReqIcd10" name="icd10" type="text" placeholder="Example: Z13.79, diagnosis-specific codes">
+              </div>
+              <div class="pgx-req-field pgx-req-span-2">
+                <label for="pgxReqDiagnosis">Diagnosis / Clinical Condition</label>
+                <input id="pgxReqDiagnosis" name="diagnosis" type="text">
+              </div>
+              <div class="pgx-req-field pgx-req-full">
+                <label for="pgxReqMedications">Current or Considered Medication(s)</label>
+                <textarea id="pgxReqMedications" name="medications" placeholder="Medication, dose, reason for use, start date if known"></textarea>
+              </div>
+              <div class="pgx-req-field pgx-req-full">
+                <label for="pgxReqHistory">Clinical Rationale</label>
+                <textarea id="pgxReqHistory" name="clinical_rationale" placeholder="Medication failure, adverse drug reaction, polypharmacy, new therapy, prior PGx result, or other medical necessity details"></textarea>
+              </div>
+            </div>
+            <div class="pgx-req-checkgrid">
+              <label class="pgx-req-check"><input type="checkbox" name="reason_med_selection"><span><strong>Medication selection or dosing</strong><span>Use result to inform prescribing strategy.</span></span></label>
+              <label class="pgx-req-check"><input type="checkbox" name="reason_failure"><span><strong>History of medication failure</strong><span>Prior inadequate response or intolerance.</span></span></label>
+              <label class="pgx-req-check"><input type="checkbox" name="reason_adr"><span><strong>Adverse drug reaction</strong><span>Current or prior adverse effect concern.</span></span></label>
+              <label class="pgx-req-check"><input type="checkbox" name="reason_polypharmacy"><span><strong>Polypharmacy or complex regimen</strong><span>Multiple active or planned medications.</span></span></label>
+              <label class="pgx-req-check"><input type="checkbox" name="reason_new_med"><span><strong>New medication start</strong><span>Testing before therapy initiation.</span></span></label>
+              <label class="pgx-req-check"><input type="checkbox" name="reason_prior_pgx"><span><strong>Prior PGx testing reviewed</strong><span>Document prior testing status and avoid duplicative germline testing.</span></span></label>
+            </div>
+          </section>
+
+          <section class="pgx-req-section">
+            <div class="pgx-req-section-head">
+              <h3>Billing / Reporting</h3>
+              <span>Operational</span>
+            </div>
+            <div class="pgx-req-grid">
+              <div class="pgx-req-field">
+                <label for="pgxReqBillType">Bill Type</label>
+                <select id="pgxReqBillType" name="bill_type">
+                  <option></option>
+                  <option>Client bill</option>
+                  <option>Insurance bill</option>
+                  <option>Patient self-pay</option>
+                  <option>Research / no charge</option>
+                </select>
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqPrimaryInsurance">Primary Insurance</label>
+                <input id="pgxReqPrimaryInsurance" name="primary_insurance" type="text">
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqPolicy">Policy / Member ID</label>
+                <input id="pgxReqPolicy" name="policy" type="text">
+              </div>
+              <div class="pgx-req-field">
+                <label for="pgxReqGroup">Group</label>
+                <input id="pgxReqGroup" name="group" type="text">
+              </div>
+              <div class="pgx-req-field pgx-req-span-2">
+                <label for="pgxReqReportTo">Report To</label>
+                <input id="pgxReqReportTo" name="report_to" type="text" placeholder="Ordering provider, portal, fax, or secure delivery route">
+              </div>
+              <div class="pgx-req-field pgx-req-span-2">
+                <label for="pgxReqCopyTo">Copy To</label>
+                <input id="pgxReqCopyTo" name="copy_to" type="text">
+              </div>
+            </div>
+          </section>
+
+          <section class="pgx-req-section">
+            <div class="pgx-req-section-head">
+              <h3>Consent and Provider Attestation</h3>
+              <span>Signature</span>
+            </div>
+            <div class="pgx-req-checkgrid">
+              <label class="pgx-req-check">
+                <input type="checkbox" name="attest_consent">
+                <span><strong>Patient consent obtained</strong><span>The patient received an explanation of the purpose, benefits, risks, limitations, and possible uses of the PGx result.</span></span>
+              </label>
+              <label class="pgx-req-check">
+                <input type="checkbox" name="attest_necessity">
+                <span><strong>Medical necessity certified</strong><span>The ordering provider certifies the test is ordered for patient care and documentation is maintained in the medical record.</span></span>
+              </label>
+              <label class="pgx-req-check">
+                <input type="checkbox" name="attest_sample">
+                <span><strong>Specimen identity confirmed</strong><span>Specimen label matches the patient identifiers on this requisition.</span></span>
+              </label>
+              <label class="pgx-req-check">
+                <input type="checkbox" name="attest_limits">
+                <span><strong>Limitations acknowledged</strong><span>PGx testing supports prescribing decisions and does not diagnose or treat disease by itself.</span></span>
+              </label>
+            </div>
+            <div class="pgx-req-signature">
+              <div>
+                <span class="pgx-req-label">Provider Signature</span>
+                <div class="pgx-req-sign-line"></div>
+              </div>
+              <div>
+                <span class="pgx-req-label">Printed Name</span>
+                <div class="pgx-req-sign-line"></div>
+              </div>
+              <div>
+                <span class="pgx-req-label">Date</span>
+                <div class="pgx-req-sign-line"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="pgx-req-section pgx-req-print-title">
+            <div class="pgx-req-section-head">
+              <h3>Laboratory Use Only</h3>
+              <span>Accession</span>
+            </div>
+            <div class="pgx-req-grid">
+              <div class="pgx-req-field">
+                <label>Accession Number</label>
+                <input type="text">
+              </div>
+              <div class="pgx-req-field">
+                <label>Accepted / Rejected</label>
+                <input type="text">
+              </div>
+              <div class="pgx-req-field">
+                <label>Reviewed By</label>
+                <input type="text">
+              </div>
+              <div class="pgx-req-field">
+                <label>Date</label>
+                <input type="text">
+              </div>
+            </div>
+          </section>
+        </form>
+      </div>
+    </section>
 
     <section class="pgx-dashboard" id="pgxDashboard" aria-live="polite"></section>
 
@@ -2022,6 +2678,14 @@
       const searchEl = root.querySelector("#pgxSearch");
       const ownerEl = root.querySelector("#pgxOwnerFilter");
       const resetEl = root.querySelector("#pgxReset");
+      const requisitionEl = root.querySelector("#pgxRequisition");
+      const reqModalEl = root.querySelector("#pgxReqModal");
+      const reqFormEl = root.querySelector("#pgxReqForm");
+      const reqCloseEl = root.querySelector("#pgxReqClose");
+      const reqClearEl = root.querySelector("#pgxReqClear");
+      const reqPrintEl = root.querySelector("#pgxReqPrint");
+      const reqFirstFieldEl = root.querySelector("#pgxReqProviderName");
+      let lastReqFocus = null;
 
       function readStorage() {
         try {
@@ -2113,6 +2777,42 @@
           sessionStorage.removeItem(editGate.sessionKey);
         }
         render();
+      }
+
+      function openRequisition() {
+        lastReqFocus = document.activeElement;
+        reqModalEl.hidden = false;
+        document.body.classList.add("pgx-req-open");
+        window.setTimeout(() => {
+          reqFirstFieldEl.focus();
+        }, 0);
+      }
+
+      function closeRequisition() {
+        reqModalEl.hidden = true;
+        document.body.classList.remove("pgx-req-open");
+        if (lastReqFocus && typeof lastReqFocus.focus === "function") {
+          lastReqFocus.focus();
+        }
+      }
+
+      function clearRequisition() {
+        if (!window.confirm("Clear the requisition form?")) return;
+        reqFormEl.reset();
+        reqFirstFieldEl.focus();
+      }
+
+      function printRequisition() {
+        document.body.classList.add("pgx-printing");
+        const cleanup = () => {
+          document.body.classList.remove("pgx-printing");
+          window.removeEventListener("afterprint", cleanup);
+        };
+        window.addEventListener("afterprint", cleanup);
+        window.setTimeout(() => {
+          window.print();
+          window.setTimeout(cleanup, 900);
+        }, 40);
       }
 
       function renderEditState() {
@@ -2620,6 +3320,26 @@
         setEditMode(false);
       });
 
+      requisitionEl.addEventListener("click", openRequisition);
+
+      reqCloseEl.addEventListener("click", closeRequisition);
+
+      reqClearEl.addEventListener("click", clearRequisition);
+
+      reqPrintEl.addEventListener("click", printRequisition);
+
+      reqModalEl.addEventListener("click", (event) => {
+        if (event.target === reqModalEl) {
+          closeRequisition();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !reqModalEl.hidden) {
+          closeRequisition();
+        }
+      });
+
       addFormEl.addEventListener("submit", (event) => {
         event.preventDefault();
         if (!canEdit()) return;
@@ -2749,5 +3469,6 @@
     })();
   </script>
 </section>
+
 </body>
 </html>
