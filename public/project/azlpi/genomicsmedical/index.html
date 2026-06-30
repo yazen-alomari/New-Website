@@ -676,56 +676,151 @@
       display: none;
     }
 
+    body.pgx-req-open {
+      overflow: hidden;
+    }
+
     #pgx-goal-tracker .pgx-req-modal {
       align-items: flex-start;
-      background: rgba(31, 39, 41, 0.48);
+      background: linear-gradient(135deg, rgba(14, 32, 33, 0.78), rgba(18, 58, 62, 0.62));
       display: flex;
       inset: 0;
       justify-content: center;
       overflow: auto;
-      padding: 28px 14px;
+      padding: 30px 14px;
       position: fixed;
       z-index: 9999;
     }
 
     #pgx-goal-tracker .pgx-req-panel {
-      background: var(--paper);
-      border: 1px solid var(--line);
+      background: #f8fbfa;
+      border: 1px solid rgba(255, 255, 255, 0.34);
       border-radius: 8px;
-      box-shadow: 0 30px 80px rgba(31, 39, 41, 0.24);
-      max-width: 1040px;
+      box-shadow: 0 34px 90px rgba(5, 18, 20, 0.34);
+      max-width: 1120px;
       overflow: hidden;
-      width: min(100%, 1040px);
+      width: min(100%, 1120px);
     }
 
     #pgx-goal-tracker .pgx-req-header {
       align-items: start;
-      background: linear-gradient(135deg, #f8fbfa, #edf5f2);
-      border-bottom: 1px solid var(--line);
+      background: linear-gradient(135deg, #122a2b 0%, #0f6f65 58%, #2f7d36 100%);
+      border-bottom: 0;
+      color: #fff;
       display: grid;
       gap: 16px;
       grid-template-columns: minmax(0, 1fr) auto;
-      padding: 20px;
+      padding: 24px;
+      position: relative;
+    }
+
+    #pgx-goal-tracker .pgx-req-header::before {
+      background: linear-gradient(90deg, #00a58f, #315f91, #bd352b, #a87412, #2f7d36);
+      content: "";
+      height: 5px;
+      inset: 0 0 auto;
+      position: absolute;
+    }
+
+    #pgx-goal-tracker .pgx-req-brand {
+      align-items: center;
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 220px minmax(0, 1fr);
+    }
+
+    #pgx-goal-tracker .pgx-req-logo-card {
+      align-items: center;
+      background: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.68);
+      border-radius: 8px;
+      display: flex;
+      min-height: 118px;
+      padding: 10px;
+      box-shadow: 0 18px 36px rgba(5, 18, 20, 0.18);
+    }
+
+    #pgx-goal-tracker .pgx-req-logo-card img {
+      display: block;
+      height: auto;
+      width: 100%;
     }
 
     #pgx-goal-tracker .pgx-req-kicker {
-      color: var(--teal-strong);
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      border-radius: 999px;
+      color: #e9fffb;
+      display: inline-flex;
       font-size: 12px;
       font-weight: 850;
+      padding: 5px 9px;
       text-transform: uppercase;
     }
 
     #pgx-goal-tracker .pgx-req-header h2 {
+      color: #fff;
       font-size: 25px;
       line-height: 1.16;
-      margin-top: 5px;
+      margin-top: 10px;
     }
 
     #pgx-goal-tracker .pgx-req-header p {
-      color: var(--muted);
+      color: rgba(255, 255, 255, 0.82);
       font-size: 13px;
       margin-top: 7px;
       max-width: 760px;
+    }
+
+    #pgx-goal-tracker .pgx-req-overview {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: 15px;
+      max-width: 820px;
+    }
+
+    #pgx-goal-tracker .pgx-req-mini {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      min-height: 62px;
+      padding: 9px;
+    }
+
+    #pgx-goal-tracker .pgx-req-mini b,
+    #pgx-goal-tracker .pgx-req-mini span {
+      display: block;
+      line-height: 1.18;
+    }
+
+    #pgx-goal-tracker .pgx-req-mini b {
+      color: #fff;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    #pgx-goal-tracker .pgx-req-mini span {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 11px;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+
+    #pgx-goal-tracker .pgx-req-mini[data-tone="provider"] {
+      border-top: 4px solid #50dbc9;
+    }
+
+    #pgx-goal-tracker .pgx-req-mini[data-tone="specimen"] {
+      border-top: 4px solid #f0b84b;
+    }
+
+    #pgx-goal-tracker .pgx-req-mini[data-tone="test"] {
+      border-top: 4px solid #ff8877;
+    }
+
+    #pgx-goal-tracker .pgx-req-mini[data-tone="attest"] {
+      border-top: 4px solid #87d37c;
     }
 
     #pgx-goal-tracker .pgx-req-actions {
@@ -735,35 +830,123 @@
       justify-content: flex-end;
     }
 
+    #pgx-goal-tracker .pgx-req-header .pgx-secondary {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.28);
+      color: #fff;
+    }
+
+    #pgx-goal-tracker .pgx-req-header .pgx-primary {
+      background: #fff;
+      border-color: #fff;
+      color: #0f6f65;
+    }
+
     #pgx-goal-tracker .pgx-req-body {
       display: grid;
-      gap: 12px;
+      gap: 11px;
       padding: 14px;
     }
 
     #pgx-goal-tracker .pgx-req-alert {
-      background: var(--amber-soft);
-      border: 1px solid #dfc78a;
+      background: linear-gradient(90deg, #fff6df, #fffdf8);
+      border: 1px solid #e5c673;
+      border-left: 6px solid var(--amber);
       border-radius: 8px;
       color: #694c10;
       font-size: 12px;
       font-weight: 700;
-      padding: 10px 12px;
+      padding: 11px 13px;
     }
 
     #pgx-goal-tracker .pgx-req-section {
+      --req-accent: var(--teal-strong);
+      --req-accent-soft: var(--teal-soft);
+      --req-accent-ink: #0f6f65;
       background: #fff;
       border: 1px solid var(--line);
+      border-left: 7px solid var(--req-accent);
       border-radius: 8px;
+      box-shadow: 0 8px 22px rgba(31, 39, 41, 0.045);
       padding: 14px;
+      position: relative;
+    }
+
+    #pgx-goal-tracker .pgx-req-section[data-req-section="provider"] {
+      --req-accent: var(--teal-strong);
+      --req-accent-soft: var(--teal-soft);
+      --req-accent-ink: #0f6f65;
+    }
+
+    #pgx-goal-tracker .pgx-req-section[data-req-section="patient"] {
+      --req-accent: var(--steel);
+      --req-accent-soft: var(--steel-soft);
+      --req-accent-ink: #315f91;
+    }
+
+    #pgx-goal-tracker .pgx-req-section[data-req-section="specimen"] {
+      --req-accent: var(--amber);
+      --req-accent-soft: var(--amber-soft);
+      --req-accent-ink: #78540f;
+    }
+
+    #pgx-goal-tracker .pgx-req-section[data-req-section="test"] {
+      --req-accent: var(--coral-strong);
+      --req-accent-soft: var(--coral-soft);
+      --req-accent-ink: #9e2c24;
+    }
+
+    #pgx-goal-tracker .pgx-req-section[data-req-section="clinical"] {
+      --req-accent: #7252a3;
+      --req-accent-soft: #eee7f7;
+      --req-accent-ink: #5b3f85;
+    }
+
+    #pgx-goal-tracker .pgx-req-section[data-req-section="billing"] {
+      --req-accent: #315f91;
+      --req-accent-soft: #e4eef8;
+      --req-accent-ink: #284f78;
+    }
+
+    #pgx-goal-tracker .pgx-req-section[data-req-section="consent"] {
+      --req-accent: var(--sage-strong);
+      --req-accent-soft: var(--sage-soft);
+      --req-accent-ink: #2f6a35;
+    }
+
+    #pgx-goal-tracker .pgx-req-section[data-req-section="lab"] {
+      --req-accent: var(--ink);
+      --req-accent-soft: var(--wash);
+      --req-accent-ink: var(--ink);
     }
 
     #pgx-goal-tracker .pgx-req-section-head {
       align-items: center;
-      display: flex;
+      display: grid;
       gap: 10px;
+      grid-template-columns: minmax(0, 1fr) auto;
       justify-content: space-between;
       margin-bottom: 12px;
+    }
+
+    #pgx-goal-tracker .pgx-req-section-title {
+      align-items: center;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 38px minmax(0, 1fr);
+    }
+
+    #pgx-goal-tracker .pgx-req-step {
+      align-items: center;
+      background: var(--req-accent);
+      border-radius: 999px;
+      color: #fff;
+      display: inline-flex;
+      font-size: 12px;
+      font-weight: 850;
+      height: 34px;
+      justify-content: center;
+      width: 34px;
     }
 
     #pgx-goal-tracker .pgx-req-section h3 {
@@ -771,11 +954,22 @@
       line-height: 1.2;
     }
 
+    #pgx-goal-tracker .pgx-req-section-title p {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
     #pgx-goal-tracker .pgx-req-section-head span {
-      color: var(--quiet);
+      background: var(--req-accent-soft);
+      border: 1px solid color-mix(in srgb, var(--req-accent) 32%, #fff);
+      border-radius: 999px;
+      color: var(--req-accent-ink);
       font-size: 11px;
       font-weight: 800;
+      padding: 5px 8px;
       text-transform: uppercase;
+      white-space: nowrap;
     }
 
     #pgx-goal-tracker .pgx-req-grid {
@@ -801,13 +995,21 @@
     #pgx-goal-tracker .pgx-req-field input,
     #pgx-goal-tracker .pgx-req-field select,
     #pgx-goal-tracker .pgx-req-field textarea {
-      background: var(--wash);
+      background: #fbfdfc;
       border: 1px solid var(--line);
       border-radius: 8px;
       color: var(--ink);
       min-width: 0;
       padding: 10px 11px;
       width: 100%;
+    }
+
+    #pgx-goal-tracker .pgx-req-field input:focus,
+    #pgx-goal-tracker .pgx-req-field select:focus,
+    #pgx-goal-tracker .pgx-req-field textarea:focus {
+      border-color: var(--req-accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--req-accent) 18%, transparent);
+      outline: 0;
     }
 
     #pgx-goal-tracker .pgx-req-field input,
@@ -840,8 +1042,9 @@
 
     #pgx-goal-tracker .pgx-req-check {
       align-items: start;
-      background: var(--wash);
+      background: linear-gradient(90deg, var(--req-accent-soft), #fff 52%);
       border: 1px solid var(--line);
+      border-left: 5px solid var(--req-accent);
       border-radius: 8px;
       display: grid;
       gap: 8px;
@@ -851,7 +1054,7 @@
     }
 
     #pgx-goal-tracker .pgx-req-check input {
-      accent-color: var(--teal-strong);
+      accent-color: var(--req-accent);
       height: 16px;
       margin: 2px 0 0;
       width: 16px;
@@ -872,12 +1075,14 @@
     }
 
     #pgx-goal-tracker .pgx-req-note {
-      background: var(--teal-soft);
-      border: 1px solid #a9ddd1;
+      background: linear-gradient(90deg, var(--req-accent-soft), #fff);
+      border: 1px solid color-mix(in srgb, var(--req-accent) 26%, #fff);
+      border-left: 5px solid var(--req-accent);
       border-radius: 8px;
-      color: #116d61;
+      color: var(--req-accent-ink);
       font-size: 12px;
       font-weight: 700;
+      margin-top: 10px;
       padding: 10px 12px;
     }
 
@@ -892,7 +1097,7 @@
     }
 
     #pgx-goal-tracker .pgx-req-sign-line {
-      border-bottom: 1px solid var(--line-strong);
+      border-bottom: 2px solid color-mix(in srgb, var(--req-accent) 40%, var(--line-strong));
       min-height: 34px;
     }
 
@@ -1357,6 +1562,14 @@
         grid-template-columns: 1fr;
       }
 
+      #pgx-goal-tracker .pgx-req-brand {
+        grid-template-columns: 180px minmax(0, 1fr);
+      }
+
+      #pgx-goal-tracker .pgx-req-overview {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       #pgx-goal-tracker .pgx-req-span-2,
       #pgx-goal-tracker .pgx-req-span-3,
       #pgx-goal-tracker .pgx-req-full {
@@ -1431,6 +1644,18 @@
         min-height: 100vh;
       }
 
+      #pgx-goal-tracker .pgx-req-brand,
+      #pgx-goal-tracker .pgx-req-overview,
+      #pgx-goal-tracker .pgx-req-section-head,
+      #pgx-goal-tracker .pgx-req-section-title {
+        grid-template-columns: 1fr;
+      }
+
+      #pgx-goal-tracker .pgx-req-logo-card {
+        min-height: 92px;
+        width: min(230px, 100%);
+      }
+
       #pgx-goal-tracker .pgx-req-checkgrid {
         grid-template-columns: 1fr;
       }
@@ -1482,6 +1707,36 @@
         border-bottom: 2px solid #1f2729 !important;
         grid-template-columns: 1fr !important;
         padding: 0 0 12px !important;
+      }
+
+      body.pgx-printing #pgxReqModal .pgx-req-brand {
+        grid-template-columns: 1.45in minmax(0, 1fr) !important;
+      }
+
+      body.pgx-printing #pgxReqModal .pgx-req-logo-card {
+        border: 1px solid #dbe4e0 !important;
+        box-shadow: none !important;
+        min-height: 0 !important;
+        padding: 6px !important;
+      }
+
+      body.pgx-printing #pgxReqModal .pgx-req-kicker {
+        background: #fff !important;
+        border-color: #dbe4e0 !important;
+        color: #0f6f65 !important;
+        padding-left: 0 !important;
+      }
+
+      body.pgx-printing #pgxReqModal .pgx-req-header h2 {
+        color: #1f2729 !important;
+      }
+
+      body.pgx-printing #pgxReqModal .pgx-req-header p {
+        color: #657174 !important;
+      }
+
+      body.pgx-printing #pgxReqModal .pgx-req-overview {
+        display: none !important;
       }
 
       body.pgx-printing #pgxReqModal .pgx-req-actions,
@@ -1540,10 +1795,21 @@
     <section class="pgx-req-modal" id="pgxReqModal" role="dialog" aria-modal="true" aria-labelledby="pgxReqTitle" hidden>
       <div class="pgx-req-panel">
         <div class="pgx-req-header">
-          <div>
-            <p class="pgx-req-kicker">Electronic Requisition</p>
-            <h2 id="pgxReqTitle">Genomics Medical Pharmacogenomics Requisition</h2>
-            <p>Clinician order form for PGx testing, specimen documentation, clinical indication, medication context, consent confirmation, and provider medical necessity attestation.</p>
+          <div class="pgx-req-brand">
+            <div class="pgx-req-logo-card">
+              <img src="/project/azlpi/genomicsmedical/consultative-genomics-logo.png" alt="Consultative Genomics PLLC">
+            </div>
+            <div>
+              <p class="pgx-req-kicker">Electronic Requisition</p>
+              <h2 id="pgxReqTitle">Genomics Medical Pharmacogenomics Requisition</h2>
+              <p>Clinician order form for PGx testing, specimen documentation, clinical indication, medication context, consent confirmation, and provider medical necessity attestation.</p>
+              <div class="pgx-req-overview" aria-label="Requisition summary">
+                <div class="pgx-req-mini" data-tone="provider"><span>Identity</span><b>Provider + Patient</b></div>
+                <div class="pgx-req-mini" data-tone="specimen"><span>Sample</span><b>Specimen Chain</b></div>
+                <div class="pgx-req-mini" data-tone="test"><span>Order</span><b>PGx Panel Menu</b></div>
+                <div class="pgx-req-mini" data-tone="attest"><span>Release</span><b>Consent + Signoff</b></div>
+              </div>
+            </div>
           </div>
           <div class="pgx-req-actions">
             <button class="pgx-secondary" id="pgxReqClear" type="button">Clear</button>
@@ -1557,9 +1823,15 @@
             HIPAA Notice: this form is fillable for viewing, printing, or saving as PDF only. The tracker does not submit, store, or sync requisition entries. Do not collect real patient data through Squarespace or Supabase unless a HIPAA-compliant intake system, BAA, access control, retention policy, and lab approval workflow are in place.
           </div>
 
-          <section class="pgx-req-section">
+          <section class="pgx-req-section" data-req-section="provider">
             <div class="pgx-req-section-head">
-              <h3>Ordering Provider</h3>
+              <div class="pgx-req-section-title">
+                <b class="pgx-req-step">01</b>
+                <div>
+                  <h3>Ordering Provider</h3>
+                  <p>Practice, ordering clinician, and secure contact details.</p>
+                </div>
+              </div>
               <span>Required</span>
             </div>
             <div class="pgx-req-grid">
@@ -1594,9 +1866,15 @@
             </div>
           </section>
 
-          <section class="pgx-req-section">
+          <section class="pgx-req-section" data-req-section="patient">
             <div class="pgx-req-section-head">
-              <h3>Patient Information</h3>
+              <div class="pgx-req-section-title">
+                <b class="pgx-req-step">02</b>
+                <div>
+                  <h3>Patient Information</h3>
+                  <p>Demographics and identifiers for specimen matching.</p>
+                </div>
+              </div>
               <span>Required for live use</span>
             </div>
             <div class="pgx-req-grid">
@@ -1637,9 +1915,15 @@
             </div>
           </section>
 
-          <section class="pgx-req-section">
+          <section class="pgx-req-section" data-req-section="specimen">
             <div class="pgx-req-section-head">
-              <h3>Specimen</h3>
+              <div class="pgx-req-section-title">
+                <b class="pgx-req-step">03</b>
+                <div>
+                  <h3>Specimen</h3>
+                  <p>Collection type, timing, transport, and accession review.</p>
+                </div>
+              </div>
               <span>Accessioning</span>
             </div>
             <div class="pgx-req-grid">
@@ -1691,9 +1975,15 @@
             </div>
           </section>
 
-          <section class="pgx-req-section">
+          <section class="pgx-req-section" data-req-section="test">
             <div class="pgx-req-section-head">
-              <h3>Test Requested</h3>
+              <div class="pgx-req-section-title">
+                <b class="pgx-req-step">04</b>
+                <div>
+                  <h3>Test Requested</h3>
+                  <p>Orderable PGx panel choices and CYP2D6 CNV reflex logic.</p>
+                </div>
+              </div>
               <span>PGx Menu</span>
             </div>
             <div class="pgx-req-checkgrid">
@@ -1719,9 +2009,15 @@
             </div>
           </section>
 
-          <section class="pgx-req-section">
+          <section class="pgx-req-section" data-req-section="clinical">
             <div class="pgx-req-section-head">
-              <h3>Clinical Information</h3>
+              <div class="pgx-req-section-title">
+                <b class="pgx-req-step">05</b>
+                <div>
+                  <h3>Clinical Information</h3>
+                  <p>ICD-10, medication context, and medical necessity rationale.</p>
+                </div>
+              </div>
               <span>Medical necessity</span>
             </div>
             <div class="pgx-req-grid">
@@ -1752,9 +2048,15 @@
             </div>
           </section>
 
-          <section class="pgx-req-section">
+          <section class="pgx-req-section" data-req-section="billing">
             <div class="pgx-req-section-head">
-              <h3>Billing / Reporting</h3>
+              <div class="pgx-req-section-title">
+                <b class="pgx-req-step">06</b>
+                <div>
+                  <h3>Billing / Reporting</h3>
+                  <p>Billing route and report delivery destination.</p>
+                </div>
+              </div>
               <span>Operational</span>
             </div>
             <div class="pgx-req-grid">
@@ -1791,9 +2093,15 @@
             </div>
           </section>
 
-          <section class="pgx-req-section">
+          <section class="pgx-req-section" data-req-section="consent">
             <div class="pgx-req-section-head">
-              <h3>Consent and Provider Attestation</h3>
+              <div class="pgx-req-section-title">
+                <b class="pgx-req-step">07</b>
+                <div>
+                  <h3>Consent and Provider Attestation</h3>
+                  <p>Consent confirmation, specimen identity, and provider signature.</p>
+                </div>
+              </div>
               <span>Signature</span>
             </div>
             <div class="pgx-req-checkgrid">
@@ -1830,9 +2138,15 @@
             </div>
           </section>
 
-          <section class="pgx-req-section pgx-req-print-title">
+          <section class="pgx-req-section pgx-req-print-title" data-req-section="lab">
             <div class="pgx-req-section-head">
-              <h3>Laboratory Use Only</h3>
+              <div class="pgx-req-section-title">
+                <b class="pgx-req-step">08</b>
+                <div>
+                  <h3>Laboratory Use Only</h3>
+                  <p>Accession review and intake disposition.</p>
+                </div>
+              </div>
               <span>Accession</span>
             </div>
             <div class="pgx-req-grid">
