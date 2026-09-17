@@ -3,6 +3,28 @@
   "installCommand": "pnpm install",
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
+  "redirects": [
+    {
+      "source": "/Inventory/Mapit",
+      "destination": "https://mapit-lab-inventory.yazinalomary.chatgpt.site",
+      "permanent": false
+    },
+    {
+      "source": "/Inventory/Mapit/:path*",
+      "destination": "https://mapit-lab-inventory.yazinalomary.chatgpt.site/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/inventory/mapit",
+      "destination": "https://mapit-lab-inventory.yazinalomary.chatgpt.site",
+      "permanent": false
+    },
+    {
+      "source": "/inventory/mapit/:path*",
+      "destination": "https://mapit-lab-inventory.yazinalomary.chatgpt.site/:path*",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/project/azlpi/genomicsmedical",
