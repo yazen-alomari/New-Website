@@ -1,0 +1,26 @@
+"use client";
+import { CheckCircle2, ExternalLink, Pencil, Trash2, Truck } from "lucide-react";
+import { money, qty, receivedQuantity, remainingQuantity, today, type Item, type Lab, type Order } from "./model";
+import { pricedTotal, purchasingSummary } from "./pricing";
+import { PoDownloadButton } from "./po-download-button";
+
+const dateLabel = (date: string) => new Date(`${date}T12:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+
+export function OrderCards({ lab, orders, items, busy, edit, receive, cancel, remove }: { lab: Lab; orders: Order[]; items: Item[]; busy: boolean; edit: (order: Order) => void; receive: (order: Order) => void; cancel: (order: Order) => void; remove: (order: Order) => void }) {
+  return <div className="order-grid">{[...orders].reverse().map(order => {
+    const partial = order.lines.some(line => receivedQuantity(order, line) > 0);
+    const total = pricedTotal(order.lines);
+    const overdue = order.status === "ordered" && order.expected && order.expected < today();
+    return <article className="order-card" key={order.id}><div className="split top"><div><h3>{order.reference}</h3><p className="muted">{order.vendor}</p></div><span className={`badge ${order.status === "received" ? "good" : order.status === "ordered" ? "watch" : "neutral"}`}>{order.status === "ordered" ? partial ? "Partially received" : "Placed" : order.status === "cancelled" && partial ? "Remainder cancelled" : order.status}</span></div>
+      <div className="order-total">{money(total.value)}<small>{total.unpriced ? `${total.unpriced} unpriced lines · known amounts only` : "Item subtotal · excludes tax and shipping"}</small></div>
+      <div className="order-line-summary">{order.lines.map(line => <div key={line.itemId}><span>{line.name}<small>{qty(line.quantity)} {line.units} × {money(line.cost)}</small><small className="receipt-progress">{qty(receivedQuantity(order, line))} received · {qty(remainingQuantity(order, line))} {order.status === "cancelled" ? "cancelled" : "remaining"}</small></span>{items.find(item => item.id === line.itemId)?.url && <a className="icon-button" href={items.find(item => item.id === line.itemId)!.url} target="_blank" rel="noopener noreferrer" aria-label={`Vendor page for ${line.name}`}><ExternalLink size={16}/></a>}</div>)}</div>
+      <p className="muted">{dateLabel(order.date)}{order.expected && ` · Expected ${dateLabel(order.expected)}`}{order.receivedAt && ` · Completed ${dateLabel(order.receivedAt)}`}</p>{overdue && <p className="text-red overdue-label">Delivery overdue · outstanding quantities remain</p>}{order.notes && <p className="order-note">{order.notes}</p>}{order.cancelledAt && <p className="muted">Remainder cancelled {dateLabel(order.cancelledAt)}{order.cancellationNote && ` · ${order.cancellationNote}`}</p>}
+      <div className="card-actions"><PoDownloadButton order={order} lab={lab}/>{order.status !== "received" && !partial && <button className="button small" disabled={busy} onClick={() => edit(order)}><Pencil size={15}/>Edit order</button>}{order.status === "ordered" && <button className="button small primary" disabled={busy} onClick={() => receive(order)}><Truck size={16}/>Receive delivery</button>}{order.status === "ordered" && partial && <button className="button small" disabled={busy} onClick={() => cancel(order)}>Cancel remainder</button>}{["draft", "cancelled"].includes(order.status) && !partial && <button className="icon-button danger" disabled={busy} aria-label={`Delete order ${order.reference}`} onClick={() => remove(order)}><Trash2 size={17}/></button>}{order.status === "received" && <span className="muted"><CheckCircle2 size={15}/> All quantities received</span>}</div>
+    </article>;
+  })}</div>;
+}
+
+export function PurchasingCard({ orders, lab, edit }: { orders: Order[]; lab: Lab; edit: () => void }) {
+  const month = today().slice(0, 7), total = purchasingSummary(orders, month);
+  return <section className="panel budget-card"><div className="panel-heading"><div><h2>Monthly purchasing</h2><p className="muted">{dateLabel(`${month}-01`).replace("1, ", "")} · UTC</p></div><button className="icon-button" aria-label="Edit monthly budget" onClick={edit}><Pencil size={18}/></button></div><div className="budget-body"><span className="muted">Order commitments · by order date</span><strong>{money(total.value)}</strong><div className="stock-track"><span style={{ width: `${lab.budget ? Math.min(100, total.known / lab.budget * 100) : 0}%` }}/></div><div className="split"><span>Monthly budget</span><b>{lab.budget === null ? "Not set" : money(lab.budget)}</b></div>{lab.budget !== null && total.known > lab.budget && <p className="text-red">{money(total.known - lab.budget)} above budget{total.unpriced ? " before unpriced lines" : ""}</p>}<p className="muted">{total.unpriced ? `${total.unpriced} unpriced lines excluded. ` : ""}Includes placed and received orders, and quantities already received on cancelled orders. Not cash paid. Excludes tax, shipping, drafts and cancelled outstanding quantities.</p><button className="button" onClick={edit}><Pencil size={16}/>{lab.budget === null ? "Set budget" : "Edit budget"}</button></div></section>;
+}

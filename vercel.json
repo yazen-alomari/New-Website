@@ -3,29 +3,41 @@
   "installCommand": "pnpm install",
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
-  "redirects": [
-    {
-      "source": "/Inventory/Mapit",
-      "destination": "https://mapit-lab-inventory.yazinalomary.chatgpt.site",
-      "permanent": false
-    },
+  "headers": [
     {
       "source": "/Inventory/Mapit/:path*",
-      "destination": "https://mapit-lab-inventory.yazinalomary.chatgpt.site/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/inventory/mapit",
-      "destination": "https://mapit-lab-inventory.yazinalomary.chatgpt.site",
-      "permanent": false
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }]
     },
     {
       "source": "/inventory/mapit/:path*",
-      "destination": "https://mapit-lab-inventory.yazinalomary.chatgpt.site/:path*",
-      "permanent": false
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }]
     }
   ],
   "rewrites": [
+    {
+      "source": "/Inventory/Mapit/api/:path*",
+      "destination": "https://mapit-lab-inventory.yazinalomary.chatgpt.site/api/:path*"
+    },
+    {
+      "source": "/inventory/mapit/api/:path*",
+      "destination": "https://mapit-lab-inventory.yazinalomary.chatgpt.site/api/:path*"
+    },
+    {
+      "source": "/Inventory/Mapit",
+      "destination": "/Inventory/Mapit/index.html"
+    },
+    {
+      "source": "/Inventory/Mapit/",
+      "destination": "/Inventory/Mapit/index.html"
+    },
+    {
+      "source": "/inventory/mapit",
+      "destination": "/Inventory/Mapit/index.html"
+    },
+    {
+      "source": "/inventory/mapit/",
+      "destination": "/Inventory/Mapit/index.html"
+    },
     {
       "source": "/project/azlpi/genomicsmedical",
       "destination": "/project/azlpi/genomicsmedical/index.html"
