@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "currency": "USD",
+  "source": "Owner-supplied planning rates, October 16, 2026",
+  "defaultBatchSize": 60,
+  "maximumBatchSize": 960,
+  "extractionCentsPerSample": 280,
+  "waterCentsPerSample": 30,
+  "tipsCentsPerSample": 100,
+  "extractionPlate": {
+    "costCents": 500,
+    "samplesPerPlate": 16
+  },
+  "pcrPlate": {
+    "costCents": 300,
+    "samplesPerPlate": 60
+  },
+  "panels": [
+    {
+      "id": "rpp",
+      "name": "RPP Light",
+      "reagentCentsPerSample": 500
+    },
+    {
+      "id": "sti",
+      "name": "STI",
+      "reagentCentsPerSample": 1200
+    },
+    {
+      "id": "uti",
+      "name": "UTI",
+      "reagentCentsPerSample": 1800
+    },
+    {
+      "id": "wound",
+      "name": "Wound",
+      "reagentCentsPerSample": 2000
+    }
+  ]
+}

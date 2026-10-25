@@ -5,12 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "vite build && pnpm run build:mapit",
+    "build": "vite build && pnpm run build:mapit && pnpm run build:congen",
+    "build:congen": "vite build --config congen/vite.config.js",
+    "dev:congen": "vite --config congen/vite.config.js",
+    "dev:congen-api": "node server/congen-dev.js",
+    "test:congen": "node --test congen/*.test.js",
     "build:mapit": "vite build --config mapit/vite.config.ts",
     "dev:mapit": "vite --config mapit/vite.config.ts",
     "preview": "vite preview --host 127.0.0.1"
   },
   "dependencies": {
+    "@vercel/blob": "2.7.0",
     "@vitejs/plugin-react": "^5.0.0",
     "lucide-react": "^0.468.0",
     "react": "^19.1.0",

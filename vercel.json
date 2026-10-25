@@ -5,15 +5,64 @@
   "outputDirectory": "dist",
   "headers": [
     {
+      "source": "/consultative-genomics/:path*",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "same-origin" },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+        }
+      ]
+    },
+    {
       "source": "/Inventory/Mapit/:path*",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }]
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }
+      ]
     },
     {
       "source": "/inventory/mapit/:path*",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }]
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }
+      ]
     }
   ],
   "rewrites": [
+    {
+      "source": "/consultative-genomics/api/:path*",
+      "destination": "/api/congen/:path*"
+    },
+    {
+      "source": "/consultative-genomics",
+      "destination": "/consultative-genomics/index.html"
+    },
+    {
+      "source": "/consultative-genomics/",
+      "destination": "/consultative-genomics/index.html"
+    },
+    {
+      "source": "/consultative-genomics/costs",
+      "destination": "/consultative-genomics/index.html"
+    },
+    {
+      "source": "/consultative-genomics/clients",
+      "destination": "/consultative-genomics/index.html"
+    },
+    {
+      "source": "/consultative-genomics/clients/:id",
+      "destination": "/consultative-genomics/index.html"
+    },
+    {
+      "source": "/consultative-genomics/materials",
+      "destination": "/consultative-genomics/index.html"
+    },
+    {
+      "source": "/consultative-genomics/settings",
+      "destination": "/consultative-genomics/index.html"
+    },
     {
       "source": "/Inventory/Mapit/api/:path*",
       "destination": "https://mapit-lab-inventory.yazinalomary.chatgpt.site/api/:path*"
