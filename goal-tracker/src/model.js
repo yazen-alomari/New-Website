@@ -44,7 +44,10 @@ export const orderedUpdates = (goal) =>
   );
 export const currentProgress = (goal) =>
   orderedUpdates(goal)
-    .filter((u) => u.progress !== null)
+    .filter(
+      (u) =>
+        u.progress !== null && u.order >= (goal.reopenings?.at(-1)?.order || 0),
+    )
     .at(-1)?.progress ?? (goal.phase === "live" ? 100 : null);
 export function goalStatus(goal, date = today()) {
   if (currentProgress(goal) === 100) return "achieved";
@@ -110,7 +113,11 @@ export const completionDate = (goal) =>
   currentProgress(goal) === 100
     ? goal.completedDate ||
       orderedUpdates(goal)
-        .filter((u) => u.progress === 100)
+        .filter(
+          (u) =>
+            u.progress === 100 &&
+            u.order >= (goal.reopenings?.at(-1)?.order || 0),
+        )
         .at(-1)?.date
     : null;
 function text(value, max = 2000) {
@@ -164,13 +171,15 @@ export function applyAction(
         throw new Error("Choose an owning team.");
       if (!["on-track", "at-risk", "blocked"].includes(value.health))
         throw new Error("Choose a valid health status.");
-      if (!Object.hasOwn(phases, value.phase)) throw new Error("Choose a workstream status.");
+      if (!Object.hasOwn(phases, value.phase))
+        throw new Error("Choose a workstream status.");
       const fields = {
         title: required(value.title, 120),
         account: required(value.account, 120),
         scope: required(value.scope, 240),
         status: required(value.status, 2000),
         outcome: required(value.outcome, 700),
+        requirements: text(value.requirements || "", 1500),
         team: value.team || "",
         phase: value.phase,
         eta: text(value.eta || "TBD", 80),
@@ -219,6 +228,84 @@ export function applyAction(
       after = fields;
       break;
     }
+    case "goal.reopen": {
+      goal = find();
+      if (goal.archived)
+        throw new Error("Restore this workstream before reopening it.");
+      if (currentProgress(goal) !== 100)
+        throw new Error("Only a completed goal can be reopened.");
+      const dueDate = validDate(action.value?.dueDate);
+      if (dueDate < date)
+        throw new Error("Choose a new deadline of today or later.");
+      const requirements = text(action.value?.requirements || "", 1500);
+      const completedDate = completionDate(goal) || "";
+      const completedUpdate = orderedUpdates(goal)
+        .filter((u) => u.progress === 100)
+        .at(-1);
+      const order = Math.max(0, ...goal.updates.map((u) => u.order)) + 1;
+      const updateId = crypto.randomUUID();
+      before = {
+        dueDate: goal.dueDate,
+        targetWeek: goal.targetWeek,
+        eta: goal.eta,
+        completedDate,
+        requirements: goal.requirements || "",
+        phase: goal.phase,
+        status: goal.status,
+        health: goal.health,
+        progress: 100,
+      };
+      goal.reopenings ||= [];
+      goal.reopenings.push({
+        id: crypto.randomUUID(),
+        date,
+        at: now,
+        order,
+        updateId,
+        completedDate,
+        completedOutcome: goal.requirements || goal.outcome,
+        completedUpdateId: completedUpdate?.id || null,
+        dueDate,
+        requirements,
+        actor: structuredClone(actor),
+      });
+      Object.assign(goal, {
+        dueDate,
+        targetWeek: "",
+        eta: "TBD",
+        completedDate: "",
+        requirements,
+        phase: ["live", "enhancement"].includes(goal.phase)
+          ? "enhancement"
+          : "development",
+        health: "on-track",
+        status: `Reopened. ${requirements || "Additional work scheduled."}`,
+      });
+      goal.updates.push({
+        id: updateId,
+        date,
+        progress: 0,
+        kind: "reopen",
+        order,
+        note: `Goal reopened. New deadline: ${dateLabel(dueDate, true)}.${requirements ? `\nAdditional requirements: ${requirements}` : ""}`,
+        actor: structuredClone(actor),
+        createdAt: now,
+        editedAt: null,
+      });
+      after = {
+        dueDate,
+        targetWeek: "",
+        eta: goal.eta,
+        completedDate: "",
+        requirements,
+        phase: goal.phase,
+        status: goal.status,
+        health: goal.health,
+        progress: 0,
+      };
+      summary = "Goal reopened with a new deadline";
+      break;
+    }
     case "update.save": {
       goal = find();
       const priorProgress = currentProgress(goal);
@@ -248,6 +335,15 @@ export function applyAction(
         : null;
       if (value.id && !existing)
         throw new Error("This update no longer exists.");
+      const reopened = goal.reopenings?.at(-1);
+      if (
+        reopened &&
+        (!existing || existing.order >= reopened.order) &&
+        updateDate < reopened.date
+      )
+        throw new Error(
+          "New work updates cannot be dated before the goal was reopened.",
+        );
       if (existing) {
         before = structuredClone(existing);
         Object.assign(existing, fields, {
@@ -273,7 +369,11 @@ export function applyAction(
       if (nextProgress !== 100) goal.completedDate = "";
       else if (priorProgress !== 100)
         goal.completedDate = orderedUpdates(goal)
-          .filter((u) => u.progress === 100)
+          .filter(
+            (u) =>
+              u.progress === 100 &&
+              u.order >= (goal.reopenings?.at(-1)?.order || 0),
+          )
           .at(-1).date;
       break;
     }

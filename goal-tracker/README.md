@@ -12,6 +12,8 @@ All three teams may edit all workstreams. Archiving is reversible. A read-only H
 
 The interactive roadmap follows the weekly update call theme: a dark grid, green progress waves and clickable checkpoint boxes. The three most recent updates appear beside the target outcome; the drawer retains every update. Cards show the update sequence, not a calendar scale. Wave length reflects recorded numeric progress only. On phones, checkpoints stack along a vertical rail, and reduced-motion preferences disable the traveling highlight.
 
+Completed goals have a Reopen action with a required new deadline and optional additional requirements. Reopening keeps each prior completion as a permanent milestone, records the team and a new update, and starts progress for the added work at zero. The timeline retains the previous completed segment and extends to the new target. Earlier notes remain editable but cannot override the new cycle's progress. Requirements can subsequently be edited with the workstream details.
+
 ## Local Development
 
 ```sh

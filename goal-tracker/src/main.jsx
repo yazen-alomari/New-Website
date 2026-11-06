@@ -24,6 +24,7 @@ import {
   Pencil,
   Plus,
   RefreshCw,
+  RotateCcw,
   Search,
   Table2,
   Target,
@@ -56,7 +57,7 @@ import {
   download,
   exportSnapshot,
 } from "./ui.jsx";
-import { Unlock, GoalForm, UpdateForm } from "./forms.jsx";
+import { Unlock, GoalForm, UpdateForm, ReopenForm } from "./forms.jsx";
 import "./style.css";
 import "./roadmap.css";
 
@@ -98,13 +99,24 @@ function ProgressWave({ progress, vertical = false }) {
 function Trace({ goal, open }) {
   const progress = currentProgress(goal),
     updates = orderedUpdates(goal),
-    checkpoints = updates.slice(-3),
+    reopened = goal.reopenings?.at(-1),
+    checkpoints = updates
+      .filter((u) => !reopened || u.order >= reopened.order)
+      .slice(reopened ? -2 : -3),
+    count = Math.max(1, checkpoints.length) + 1 + (reopened ? 1 : 0),
+    waveProgress = reopened
+      ? 100 / count + (1 - 1 / count) * (progress || 0)
+      : progress,
     done = progress === 100;
   return (
     <div className={`trace ${done ? "achieved" : ""}`}>
       <div className="trace-labels">
         <span>
-          {goal.startDate ? dateLabel(goal.startDate) : "Start not recorded"}
+          {reopened
+            ? `Reopened ${dateLabel(reopened.date)}`
+            : goal.startDate
+              ? dateLabel(goal.startDate)
+              : "Start not recorded"}
         </span>
         <span>
           {done
@@ -118,14 +130,37 @@ function Trace({ goal, open }) {
                   : `Target ${etaLabel(goal)}`}
         </span>
       </div>
-      <div
-        className="checkpoint-track"
-        style={{ "--checkpoint-count": Math.max(1, checkpoints.length) + 1 }}
-      >
+      <div className="checkpoint-track" style={{ "--checkpoint-count": count }}>
         <div className="checkpoint-rail">
-          <ProgressWave progress={progress} />
-          <ProgressWave progress={progress} vertical />
+          <ProgressWave progress={waveProgress} />
+          <ProgressWave progress={waveProgress} vertical />
         </div>
+        {reopened && (
+          <button
+            type="button"
+            className="checkpoint completed previous-completion"
+            onClick={() => open(goal.id, reopened.completedUpdateId)}
+            aria-haspopup="dialog"
+          >
+            <span className="checkpoint-node" aria-hidden="true">
+              <Check size={12} />
+            </span>
+            <span className="checkpoint-caption">
+              Previously completed
+              <ArrowUpRight size={12} />
+            </span>
+            <strong>
+              {reopened.completedDate
+                ? dateLabel(reopened.completedDate, true)
+                : "Completed"}
+            </strong>
+            <span className="checkpoint-note">{reopened.completedOutcome}</span>
+            <span className="checkpoint-meta">
+              <CheckCheck size={13} />
+              Completed milestone
+            </span>
+          </button>
+        )}
         {checkpoints.map((u, index) => (
           <button
             type="button"
@@ -143,7 +178,11 @@ function Trace({ goal, open }) {
               )}
             </span>
             <span className="checkpoint-caption">
-              {u.source ? "Status report" : "Progress update"}
+              {u.kind === "reopen"
+                ? "Reopened"
+                : u.source
+                  ? "Status report"
+                  : "Progress update"}
               <ArrowUpRight size={12} />
             </span>
             <strong>{dateLabel(u.date, true)}</strong>
@@ -179,7 +218,7 @@ function Trace({ goal, open }) {
           type="button"
           className={`checkpoint goal-checkpoint ${done ? "completed" : "planned"}`}
           onClick={() => open(goal.id)}
-          aria-label={`View goal for ${goal.account}: ${goal.outcome}`}
+          aria-label={`View goal for ${goal.account}: ${goal.requirements || goal.outcome}`}
           aria-haspopup="dialog"
         >
           <span className="checkpoint-node" aria-hidden="true">
@@ -196,7 +235,9 @@ function Trace({ goal, open }) {
                 ? "Target not set"
                 : etaLabel(goal)}
           </strong>
-          <span className="checkpoint-note">{goal.outcome}</span>
+          <span className="checkpoint-note">
+            {goal.requirements || goal.outcome}
+          </span>
           <span className="checkpoint-meta">
             {done ? (
               <>
@@ -222,7 +263,7 @@ function Trace({ goal, open }) {
           ) : progress === null ? (
             "Progress not set"
           ) : (
-            `${progress}% complete`
+            `${progress}% ${reopened ? "of reopened work" : "complete"}`
           )}
         </span>
         <button
@@ -238,7 +279,7 @@ function Trace({ goal, open }) {
     </div>
   );
 }
-function GoalRow({ goal, data, open, edit, actor }) {
+function GoalRow({ goal, data, open, edit, actor, reopen }) {
   const lastEdit = data.history.find((e) => e.goalId === goal.id),
     health = goalStatus(goal);
   return (
@@ -261,7 +302,7 @@ function GoalRow({ goal, data, open, edit, actor }) {
         <h2>
           <button onClick={() => open(goal.id)}>{goal.title}</button>
         </h2>
-        <p className="goal-outcome">{goal.outcome}</p>
+        <p className="goal-outcome">{goal.requirements || goal.outcome}</p>
         <div className="row-badges">
           <span className={`status-badge phase-${goal.phase}`}>
             <i />
@@ -295,6 +336,12 @@ function GoalRow({ goal, data, open, edit, actor }) {
           <button className="text-button" onClick={() => edit(goal.id)}>
             <Pencil size={12} />
             Edit
+          </button>
+        )}
+        {health === "achieved" && !goal.archived && (
+          <button className="reopen-button" onClick={() => reopen(goal.id)}>
+            <RotateCcw size={13} />
+            Reopen
           </button>
         )}
       </div>
@@ -356,6 +403,7 @@ function History({ events }) {
                           startDate: "Start date",
                           note: "Update note",
                           progress: "Progress",
+                          requirements: "Additional requirements",
                           team: "Owner",
                           phase: "Status",
                         }[key] || key}
@@ -386,6 +434,7 @@ function GoalDrawer({
   mode,
   load,
   focusedUpdate,
+  reopen,
 }) {
   const [tab, setTab] = useState("updates"),
     [editor, setEditor] = useState(
@@ -422,6 +471,30 @@ function GoalDrawer({
           <span className="eyebrow">GOAL TO ACHIEVE</span>
           <p>{goal.outcome}</p>
         </div>
+        {goal.requirements && (
+          <div className="goal-statement">
+            <span className="eyebrow">ADDITIONAL REQUIREMENTS</span>
+            <p>{goal.requirements}</p>
+          </div>
+        )}
+        {goal.reopenings?.length > 0 && (
+          <details className="prior-completions">
+            <summary>
+              {goal.reopenings.length} earlier{" "}
+              {goal.reopenings.length === 1 ? "completion" : "completions"}
+            </summary>
+            {goal.reopenings.map((item) => (
+              <div key={item.id}>
+                <strong>
+                  {item.completedDate
+                    ? dateLabel(item.completedDate, true)
+                    : "Completed milestone"}
+                </strong>
+                <p>{item.completedOutcome}</p>
+              </div>
+            ))}
+          </details>
+        )}
         <div className="drawer-facts">
           <div>
             <span>Completion</span>
@@ -458,6 +531,11 @@ function GoalDrawer({
               <p>{goal.status}</p>
             </div>
             <div className="drawer-actions">
+              {progress === 100 && !goal.archived && (
+                <Button icon={RotateCcw} onClick={() => reopen(goal.id)}>
+                  Reopen
+                </Button>
+              )}
               {actor ? (
                 <>
                   <Button icon={Pencil} onClick={() => setEditor("goal")}>
@@ -671,6 +749,7 @@ function App() {
     [modal, setModal] = useState(null),
     [reauth, setReauth] = useState(false),
     [selectedId, setSelectedId] = useState(null),
+    [reopenId, setReopenId] = useState(null),
     [focusedUpdate, setFocusedUpdate] = useState(null),
     [mode, setMode] = useState(null),
     [busy, setBusy] = useState(false),
@@ -679,7 +758,7 @@ function App() {
     inFlight = useRef(false),
     revision = useRef(-1),
     modalRef = useRef(null);
-  modalRef.current = modal || selectedId;
+  modalRef.current = modal || selectedId || reopenId;
   const notify = (message) => {
     setToast(message);
     clearTimeout(timer.current);
@@ -732,7 +811,9 @@ function App() {
       notify(
         action.type === "update.save"
           ? "Update saved to the timeline"
-          : "Workstream saved",
+          : action.type === "goal.reopen"
+            ? "Goal reopened. New deadline saved."
+            : "Workstream saved",
       );
       return next;
     } catch (err) {
@@ -750,6 +831,7 @@ function App() {
     setExportMenu(false);
   }
   const selected = data?.goals.find((g) => g.id === selectedId);
+  const reopenGoal = data?.goals.find((g) => g.id === reopenId);
   if (!data)
     return (
       <div className="loading-page">
@@ -1129,6 +1211,7 @@ function App() {
                       actor={actor}
                       open={open}
                       edit={(id) => open(id, null, "edit")}
+                      reopen={setReopenId}
                     />
                   ))}
                 </div>
@@ -1179,6 +1262,7 @@ function App() {
           mode={mode}
           load={load}
           focusedUpdate={focusedUpdate}
+          reopen={setReopenId}
         />
       )}{" "}
       {(modal === "unlock" || reauth) && (
@@ -1207,6 +1291,23 @@ function App() {
           />
         </Modal>
       )}
+      {reopenGoal &&
+        (actor ? (
+          <ReopenForm
+            goal={reopenGoal}
+            data={data}
+            actor={actor}
+            save={save}
+            close={() => setReopenId(null)}
+            onReload={load}
+          />
+        ) : (
+          <Unlock
+            close={() => setReopenId(null)}
+            closeOnSuccess={false}
+            success={setActor}
+          />
+        ))}
       {toast && (
         <div className="toast" role="status">
           <Check size={16} />

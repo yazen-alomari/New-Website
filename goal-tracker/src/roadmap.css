@@ -1,4 +1,52 @@
 /* Weekly-call palette and checkpoint treatment, scoped to the roadmap. */
+.reopen-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border: 1px solid #7effb550;
+  border-radius: 5px;
+  color: #b4f5cf;
+  background: #7effb50d;
+  font-size: 11px;
+}
+.reopen-button:hover {
+  border-color: #7effb5;
+  background: #7effb51a;
+}
+.reopen-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 24px 26px 0;
+}
+.reopen-summary strong {
+  font-size: 16px;
+}
+.reopen-summary span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.reopen-summary small {
+  color: var(--green);
+  font-size: 11px;
+}
+.prior-completions {
+  margin-bottom: 20px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.prior-completions summary {
+  cursor: pointer;
+  color: var(--green);
+}
+.prior-completions > div {
+  padding-top: 12px;
+}
+.prior-completions p {
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
 .page-heading .eyebrow,
 .view-tabs button.active {
   color: var(--green);

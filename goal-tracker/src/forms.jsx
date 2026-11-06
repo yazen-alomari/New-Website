@@ -6,12 +6,21 @@ import {
   ArrowRight,
   Plus,
   RefreshCw,
+  RotateCcw,
 } from "./icons.js";
-import { teams, teamById, phases, today, currentProgress } from "./model.js";
+import {
+  teams,
+  teamById,
+  phases,
+  today,
+  currentProgress,
+  completionDate,
+  dateLabel,
+} from "./model.js";
 import { Alert, Button, Field, Modal, TeamBadge } from "./ui.jsx";
 import { base, request } from "./api.js";
 
-export function Unlock({ close, success }) {
+export function Unlock({ close, success, closeOnSuccess = true }) {
   const [team, setTeam] = useState("congen"),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
@@ -39,7 +48,7 @@ export function Unlock({ close, success }) {
               }),
             });
             success(response.actor);
-            close();
+            if (closeOnSuccess) close();
           } catch (err) {
             setError(err.message);
           } finally {
@@ -57,7 +66,13 @@ export function Unlock({ close, success }) {
               aria-pressed={team === t.id}
               aria-label={t.name}
             >
-              <span className={`team-avatar ${t.id}`}>{t.id==='congen'?<img src={`${base}/congen.png`} alt="Consultative Genomics"/>:t.initials}</span>
+              <span className={`team-avatar ${t.id}`}>
+                {t.id === "congen" ? (
+                  <img src={`${base}/congen.png`} alt="Consultative Genomics" />
+                ) : (
+                  t.initials
+                )}
+              </span>
               <span>{t.name}</span>
               {team === t.id && <Check size={14} />}
             </button>
@@ -201,6 +216,16 @@ export function GoalForm({ goal, data, save, close, actor, onReload }) {
           onChange={(e) => field("outcome", e.target.value)}
         />
       </Field>
+      {goal?.reopenings?.length > 0 && (
+        <Field label="Additional requirements (optional)">
+          <textarea
+            maxLength={1500}
+            rows={3}
+            value={values.requirements || ""}
+            onChange={(e) => field("requirements", e.target.value)}
+          />
+        </Field>
+      )}
       <div className="field-grid">
         <Field label="Status">
           <select
@@ -316,6 +341,90 @@ export function GoalForm({ goal, data, save, close, actor, onReload }) {
         </Button>
       )}
     </form>
+  );
+}
+
+export function ReopenForm({ goal, data, actor, save, close, onReload }) {
+  const revision = useRef(data.revision);
+  const [dueDate, setDueDate] = useState("");
+  const [requirements, setRequirements] = useState("");
+  const [error, setError] = useState(null);
+  const [busy, setBusy] = useState(false);
+  return (
+    <Modal title="Reopen goal" close={close}>
+      <div className="reopen-summary">
+        <strong>{goal.account}</strong>
+        <span>{goal.title}</span>
+        {completionDate(goal) && (
+          <small>Completed {dateLabel(completionDate(goal), true)}</small>
+        )}
+      </div>
+      <form
+        onSubmit={async (event) => {
+          event.preventDefault();
+          setBusy(true);
+          setError(null);
+          try {
+            await save(
+              {
+                type: "goal.reopen",
+                id: goal.id,
+                value: { dueDate, requirements },
+              },
+              revision.current,
+            );
+            close();
+          } catch (err) {
+            setError(err);
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        {error && <Alert>{error.message}</Alert>}
+        <Field label="New deadline">
+          <input
+            type="date"
+            required
+            min={today()}
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+          />
+        </Field>
+        <Field label="Additional requirements (optional)">
+          <textarea
+            rows={4}
+            maxLength={1500}
+            value={requirements}
+            onChange={(e) => setRequirements(e.target.value)}
+          />
+        </Field>
+        {error?.status === 409 && (
+          <Button
+            icon={RefreshCw}
+            onClick={async () => {
+              const latest = await onReload();
+              if (latest) {
+                revision.current = latest.revision;
+                setError(null);
+              }
+            }}
+          >
+            Load latest version
+          </Button>
+        )}
+        <footer className="form-footer">
+          <TeamBadge id={actor.team} />
+          <div>
+            <Button onClick={close}>Cancel</Button>
+            <button className="button primary" disabled={busy}>
+              <RotateCcw size={16} />
+              {busy ? "Reopening..." : "Reopen goal"}
+            </button>
+          </div>
+        </footer>
+      </form>
+    </Modal>
   );
 }
 

@@ -21,6 +21,7 @@ export { default as MessageSquare } from 'lucide-react/dist/esm/icons/message-sq
 export { default as Pencil } from 'lucide-react/dist/esm/icons/pencil.js';
 export { default as Plus } from 'lucide-react/dist/esm/icons/plus.js';
 export { default as RefreshCw } from 'lucide-react/dist/esm/icons/refresh-cw.js';
+export { default as RotateCcw } from 'lucide-react/dist/esm/icons/rotate-ccw.js';
 export { default as Search } from 'lucide-react/dist/esm/icons/search.js';
 export { default as Table2 } from 'lucide-react/dist/esm/icons/table-2.js';
 export { default as Target } from 'lucide-react/dist/esm/icons/target.js';
