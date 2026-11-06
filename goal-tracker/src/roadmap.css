@@ -10,7 +10,7 @@
   background: #7effb50d;
   font-size: 11px;
 }
-.reopen-button:hover {
+.reopen-button:hover:not(:disabled) {
   border-color: #7effb5;
   background: #7effb51a;
 }
@@ -370,7 +370,7 @@
 .checkpoint.completed::before {
   background: #68efa480;
 }
-.checkpoint:hover {
+.checkpoint:hover:not(:disabled) {
   border-color: #a8efd5;
   background: #193d3e;
   box-shadow: 0 0 18px #64e8cf15;
@@ -378,6 +378,22 @@
 .checkpoint:focus-visible {
   outline: 2px solid #d8fff0;
   outline-offset: 3px;
+}
+.is-locked
+  .roadmap-board
+  :is(.checkpoint, .account-name, h2 button, .text-button):disabled {
+  opacity: 1;
+  cursor: default;
+}
+.is-locked .roadmap-board :is(.checkpoint-caption, .account-name) > svg {
+  visibility: hidden;
+}
+.is-locked :is(input, select):disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.is-locked .brand {
+  cursor: default;
 }
 .checkpoint-caption {
   display: flex;

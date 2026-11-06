@@ -96,7 +96,7 @@ function ProgressWave({ progress, vertical = false }) {
   );
 }
 
-function Trace({ goal, open }) {
+function Trace({ goal, open, locked }) {
   const progress = currentProgress(goal),
     updates = orderedUpdates(goal),
     reopened = goal.reopenings?.at(-1),
@@ -138,6 +138,7 @@ function Trace({ goal, open }) {
         {reopened && (
           <button
             type="button"
+            disabled={locked}
             className="checkpoint completed previous-completion"
             onClick={() => open(goal.id, reopened.completedUpdateId)}
             aria-haspopup="dialog"
@@ -164,6 +165,7 @@ function Trace({ goal, open }) {
         {checkpoints.map((u, index) => (
           <button
             type="button"
+            disabled={locked}
             key={u.id}
             className={`checkpoint ${u.progress === 100 ? "completed" : index === checkpoints.length - 1 ? "current" : "recorded"}`}
             onClick={() => open(goal.id, u.id)}
@@ -196,6 +198,7 @@ function Trace({ goal, open }) {
         {!checkpoints.length && (
           <button
             type="button"
+            disabled={locked}
             className="checkpoint current"
             onClick={() => open(goal.id)}
             aria-haspopup="dialog"
@@ -216,6 +219,7 @@ function Trace({ goal, open }) {
         )}
         <button
           type="button"
+          disabled={locked}
           className={`checkpoint goal-checkpoint ${done ? "completed" : "planned"}`}
           onClick={() => open(goal.id)}
           aria-label={`View goal for ${goal.account}: ${goal.requirements || goal.outcome}`}
@@ -268,6 +272,7 @@ function Trace({ goal, open }) {
         </span>
         <button
           type="button"
+          disabled={locked}
           className="text-button"
           onClick={() => open(goal.id)}
         >
@@ -279,7 +284,7 @@ function Trace({ goal, open }) {
     </div>
   );
 }
-function GoalRow({ goal, data, open, edit, actor, reopen }) {
+function GoalRow({ goal, data, open, edit, actor, reopen, locked }) {
   const lastEdit = data.history.find((e) => e.goalId === goal.id),
     health = goalStatus(goal);
   return (
@@ -292,7 +297,11 @@ function GoalRow({ goal, data, open, edit, actor, reopen }) {
             {goal.account.slice(0, 2).toUpperCase()}
           </span>
           <div>
-            <button className="account-name" onClick={() => open(goal.id)}>
+            <button
+              disabled={locked}
+              className="account-name"
+              onClick={() => open(goal.id)}
+            >
               {goal.account}
               <ArrowUpRight size={13} />
             </button>
@@ -300,7 +309,9 @@ function GoalRow({ goal, data, open, edit, actor, reopen }) {
           </div>
         </div>
         <h2>
-          <button onClick={() => open(goal.id)}>{goal.title}</button>
+          <button disabled={locked} onClick={() => open(goal.id)}>
+            {goal.title}
+          </button>
         </h2>
         <p className="goal-outcome">{goal.requirements || goal.outcome}</p>
         <div className="row-badges">
@@ -316,7 +327,7 @@ function GoalRow({ goal, data, open, edit, actor, reopen }) {
         </div>
       </div>
       <div className="goal-journey">
-        <Trace goal={goal} open={open} />
+        <Trace goal={goal} open={open} locked={locked} />
       </div>
       <div className="goal-row-footer">
         <span>
@@ -333,13 +344,21 @@ function GoalRow({ goal, data, open, edit, actor, reopen }) {
           </span>
         )}
         {actor && (
-          <button className="text-button" onClick={() => edit(goal.id)}>
+          <button
+            disabled={locked}
+            className="text-button"
+            onClick={() => edit(goal.id)}
+          >
             <Pencil size={12} />
             Edit
           </button>
         )}
         {health === "achieved" && !goal.archived && (
-          <button className="reopen-button" onClick={() => reopen(goal.id)}>
+          <button
+            disabled={locked}
+            className="reopen-button"
+            onClick={() => reopen(goal.id)}
+          >
             <RotateCcw size={13} />
             Reopen
           </button>
@@ -680,7 +699,7 @@ function GoalDrawer({
     </Modal>
   );
 }
-function Register({ goals, data, open }) {
+function Register({ goals, data, open, locked }) {
   return (
     <div className="register-scroll">
       <table>
@@ -698,7 +717,7 @@ function Register({ goals, data, open }) {
           {goals.map((g) => (
             <tr key={g.id}>
               <td>
-                <button onClick={() => open(g.id)}>
+                <button disabled={locked} onClick={() => open(g.id)}>
                   <b>{g.account}</b>
                   <small>{g.title}</small>
                 </button>
@@ -724,6 +743,7 @@ function Register({ goals, data, open }) {
                 <IconButton
                   icon={ArrowUpRight}
                   label={`Open ${g.account} ${g.scope}`}
+                  disabled={locked}
                   onClick={() => open(g.id)}
                 />
               </td>
@@ -754,6 +774,7 @@ function App() {
     [mode, setMode] = useState(null),
     [busy, setBusy] = useState(false),
     [exportMenu, setExportMenu] = useState(false);
+  const locked = !actor || reauth;
   const timer = useRef(),
     inFlight = useRef(false),
     revision = useRef(-1),
@@ -798,6 +819,7 @@ function App() {
     };
   }, []);
   async function save(action, expectedRevision) {
+    if (locked) throw new Error("Unlock editing before making changes.");
     if (inFlight.current)
       throw new Error("Another save is in progress. Please wait.");
     inFlight.current = true;
@@ -825,10 +847,27 @@ function App() {
     }
   }
   function open(id, updateId, editMode) {
+    if (locked) return;
     setFocusedUpdate(updateId || null);
     setSelectedId(id);
     setMode(editMode || null);
     setExportMenu(false);
+  }
+  function reopen(id) {
+    if (!locked) setReopenId(id);
+  }
+  function lockWorkspace() {
+    setActor(null);
+    setReauth(false);
+    setModal(null);
+    setSelectedId(null);
+    setReopenId(null);
+    setExportMenu(false);
+    setTab("timeline");
+    setTeam("all");
+    setFilter("all");
+    setSearch("");
+    setSort("report");
   }
   const selected = data?.goals.find((g) => g.id === selectedId);
   const reopenGoal = data?.goals.find((g) => g.id === reopenId);
@@ -887,11 +926,12 @@ function App() {
   if (sort === "account")
     visible = [...visible].sort((a, b) => a.account.localeCompare(b.account));
   return (
-    <div className="app">
+    <div className={`app ${locked ? "is-locked" : ""}`}>
       <header className="topbar">
         <a
           className="brand"
-          href="https://www.alomariassociates.com"
+          href={locked ? undefined : "https://www.alomariassociates.com"}
+          aria-disabled={locked || undefined}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -920,10 +960,11 @@ function App() {
               <IconButton
                 icon={LogOut}
                 label="Lock editing"
+                disabled={locked}
                 onClick={async () => {
                   try {
                     await request("session", { method: "DELETE" });
-                    setActor(null);
+                    lockWorkspace();
                     notify("Editing locked");
                   } catch (err) {
                     setError(err.message);
@@ -955,11 +996,13 @@ function App() {
               <IconButton
                 icon={ArrowDownToLine}
                 label="Export workspace"
+                disabled={locked}
                 onClick={() => setExportMenu(!exportMenu)}
               />
               {exportMenu && (
                 <div className="export-menu">
                   <button
+                    disabled={locked}
                     onClick={() => {
                       exportSnapshot(data);
                       setExportMenu(false);
@@ -969,6 +1012,7 @@ function App() {
                     Embedded HTML snapshot
                   </button>
                   <button
+                    disabled={locked}
                     onClick={() => {
                       download(
                         "TrueMed-LIS-backup.json",
@@ -987,6 +1031,7 @@ function App() {
             <IconButton
               icon={RefreshCw}
               label="Refresh workstreams"
+              disabled={locked}
               onClick={async () => {
                 if (await load()) notify("Workspace up to date");
               }}
@@ -994,7 +1039,8 @@ function App() {
             <Button
               icon={Plus}
               primary
-              onClick={() => setModal(actor ? "new" : "unlock")}
+              disabled={locked}
+              onClick={() => setModal("new")}
             >
               New workstream
             </Button>
@@ -1061,6 +1107,7 @@ function App() {
               <button
                 key={key}
                 aria-label={name}
+                disabled={locked}
                 onClick={() => setTab(key)}
                 className={tab === key ? "active" : ""}
               >
@@ -1086,6 +1133,7 @@ function App() {
             <div className="filter-toolbar">
               <div className="team-filters">
                 <button
+                  disabled={locked}
                   className={team === "all" ? "active" : ""}
                   onClick={() => setTeam("all")}
                 >
@@ -1093,6 +1141,7 @@ function App() {
                 </button>
                 {teams.map((t) => (
                   <button
+                    disabled={locked}
                     className={team === t.id ? "active" : ""}
                     key={t.id}
                     onClick={() => setTeam(t.id)}
@@ -1102,6 +1151,7 @@ function App() {
                   </button>
                 ))}
                 <button
+                  disabled={locked}
                   className={team === "unassigned" ? "active" : ""}
                   onClick={() => setTeam("unassigned")}
                 >
@@ -1113,6 +1163,7 @@ function App() {
                   <Search size={15} />
                   <input
                     aria-label="Search workstreams"
+                    disabled={locked}
                     placeholder="Search accounts"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -1120,6 +1171,7 @@ function App() {
                 </label>
                 <select
                   aria-label="Filter workstreams"
+                  disabled={locked}
                   value={filter}
                   onChange={(e) => setFilter(e.target.value)}
                 >
@@ -1131,6 +1183,7 @@ function App() {
                 </select>
                 <select
                   aria-label="Sort workstreams"
+                  disabled={locked}
                   value={sort}
                   onChange={(e) => setSort(e.target.value)}
                 >
@@ -1164,6 +1217,7 @@ function App() {
                 <Search size={27} />
                 <h3>No matching workstreams</h3>
                 <Button
+                  disabled={locked}
                   onClick={() => {
                     setTeam("all");
                     setSearch("");
@@ -1174,7 +1228,12 @@ function App() {
                 </Button>
               </div>
             ) : tab === "register" ? (
-              <Register goals={visible} data={data} open={open} />
+              <Register
+                goals={visible}
+                data={data}
+                open={open}
+                locked={locked}
+              />
             ) : (
               <section
                 className="roadmap-board"
@@ -1209,9 +1268,10 @@ function App() {
                       goal={g}
                       data={data}
                       actor={actor}
+                      locked={locked}
                       open={open}
                       edit={(id) => open(id, null, "edit")}
-                      reopen={setReopenId}
+                      reopen={reopen}
                     />
                   ))}
                 </div>
@@ -1234,7 +1294,7 @@ function App() {
             <span className="mini-wordmark">AA</span>Alomari Associates
           </span>
           <span>
-            {actor ? (
+            {!locked ? (
               <>
                 <UnlockKeyhole size={13} />
                 Editing as {teamById(actor.team).name}
@@ -1250,7 +1310,7 @@ function App() {
           </span>
         </footer>
       </main>
-      {selected && (
+      {selected && actor && (
         <GoalDrawer
           key={selected.id + ":" + mode}
           goal={selected}
@@ -1262,17 +1322,20 @@ function App() {
           mode={mode}
           load={load}
           focusedUpdate={focusedUpdate}
-          reopen={setReopenId}
+          reopen={reopen}
         />
       )}{" "}
       {(modal === "unlock" || reauth) && (
         <Unlock
+          closeOnSuccess={false}
           close={() => {
+            if (reauth) return lockWorkspace();
             if (modal === "unlock") setModal(null);
-            setReauth(false);
           }}
           success={(identity) => {
             setActor(identity);
+            setReauth(false);
+            if (modal === "unlock") setModal(null);
             notify(`${teamById(identity.team).name} editing unlocked`);
           }}
         />
@@ -1291,23 +1354,16 @@ function App() {
           />
         </Modal>
       )}
-      {reopenGoal &&
-        (actor ? (
-          <ReopenForm
-            goal={reopenGoal}
-            data={data}
-            actor={actor}
-            save={save}
-            close={() => setReopenId(null)}
-            onReload={load}
-          />
-        ) : (
-          <Unlock
-            close={() => setReopenId(null)}
-            closeOnSuccess={false}
-            success={setActor}
-          />
-        ))}
+      {reopenGoal && actor && (
+        <ReopenForm
+          goal={reopenGoal}
+          data={data}
+          actor={actor}
+          save={save}
+          close={() => setReopenId(null)}
+          onReload={load}
+        />
+      )}
       {toast && (
         <div className="toast" role="status">
           <Check size={16} />
@@ -1315,6 +1371,7 @@ function App() {
           <IconButton
             icon={X}
             label="Dismiss notification"
+            disabled={locked}
             onClick={() => setToast("")}
           />
         </div>
