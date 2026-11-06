@@ -40,6 +40,7 @@ import {
   dateLabel,
   timestamp,
   currentProgress,
+  deadlineState,
   completionDate,
   goalStatus,
   statusLabels,
@@ -69,8 +70,9 @@ const progressWavePath =
     (_, i) => ` Q ${i * 25 + 12.5} ${i % 2 ? 33 : 7} ${(i + 1) * 25} 20`,
   ).join("");
 
-function ProgressWave({ progress, vertical = false }) {
+function ProgressWave({ progress, vertical = false, preserved = 0 }) {
   const clip = useId();
+  const preservedClip = useId();
   return (
     <svg
       className={vertical ? "vertical-wave" : "horizontal-wave"}
@@ -81,7 +83,14 @@ function ProgressWave({ progress, vertical = false }) {
       <g transform={vertical ? "translate(40 0) rotate(90)" : undefined}>
         <defs>
           <clipPath id={clip}>
-            <rect width={10 * (progress || 0)} height="40" />
+            <rect
+              x={10 * preserved}
+              width={Math.max(0, 10 * ((progress || 0) - preserved))}
+              height="40"
+            />
+          </clipPath>
+          <clipPath id={preservedClip}>
+            <rect width={10 * preserved} height="40" />
           </clipPath>
         </defs>
         <path d={progressWavePath} className="wave-base" />
@@ -92,13 +101,20 @@ function ProgressWave({ progress, vertical = false }) {
             <path d={progressWavePath} className="wave-glint" />
           </g>
         )}
+        {preserved > 0 && (
+          <g clipPath={`url(#${preservedClip})`}>
+            <path d={progressWavePath} className="wave-preserved-glow" />
+            <path d={progressWavePath} className="wave-preserved" />
+          </g>
+        )}
       </g>
     </svg>
   );
 }
 
-function Trace({ goal, open, locked }) {
+function Trace({ goal, open, locked, date }) {
   const progress = currentProgress(goal),
+    deadline = deadlineState(goal, date),
     updates = orderedUpdates(goal),
     reopened = goal.reopenings?.at(-1),
     checkpoints = updates
@@ -106,20 +122,24 @@ function Trace({ goal, open, locked }) {
       .slice(reopened ? -2 : -3),
     count = Math.max(1, checkpoints.length) + 1 + (reopened ? 1 : 0),
     waveProgress = reopened
-      ? 100 / count + (1 - 1 / count) * (progress || 0)
-      : progress,
+      ? 100 / count + (1 - 1 / count) * (deadline.elapsed ?? progress ?? 0)
+      : (deadline.elapsed ?? progress),
     done = progress === 100;
   return (
-    <div className={`trace ${done ? "achieved" : ""}`}>
+    <div
+      className={`trace deadline-${deadline.tone} ${done ? "achieved" : ""}`}
+    >
       <div className="trace-labels">
         <span>
-          {reopened
-            ? `Reopened ${dateLabel(reopened.date)}`
-            : goal.startDate
-              ? dateLabel(goal.startDate)
-              : "Start not recorded"}
+          {deadline.dueDate && !done
+            ? `Today ${dateLabel(date)}`
+            : reopened
+              ? `Reopened ${dateLabel(reopened.date)}`
+              : goal.startDate
+                ? dateLabel(goal.startDate)
+                : "Start not recorded"}
         </span>
-        <span>
+        <span className="deadline-label" title={deadline.label}>
           {done
             ? `Achieved ${completionDate(goal) ? dateLabel(completionDate(goal)) : ""}`
             : goal.targetWeek
@@ -129,12 +149,20 @@ function Trace({ goal, open, locked }) {
                 : goal.eta === "Live"
                   ? "Enhancement target unset"
                   : `Target ${etaLabel(goal)}`}
+          {!done && deadline.dueDate && ` / ${deadline.label}`}
         </span>
       </div>
       <div className="checkpoint-track" style={{ "--checkpoint-count": count }}>
         <div className="checkpoint-rail">
-          <ProgressWave progress={waveProgress} />
-          <ProgressWave progress={waveProgress} vertical />
+          <ProgressWave
+            progress={waveProgress}
+            preserved={reopened ? 100 / count : 0}
+          />
+          <ProgressWave
+            progress={waveProgress}
+            preserved={reopened ? 100 / count : 0}
+            vertical
+          />
         </div>
         {reopened && (
           <button
@@ -285,15 +313,20 @@ function Trace({ goal, open, locked }) {
     </div>
   );
 }
-function CompactTrace({ goal, open, locked }) {
+function CompactTrace({ goal, open, locked, date }) {
   const progress = currentProgress(goal),
+    deadline = deadlineState(goal, date),
     latest = orderedUpdates(goal).at(-1),
     reopened = goal.reopenings?.at(-1),
     done = progress === 100,
     outcome = goal.requirements || goal.outcome,
-    waveProgress = reopened ? 25 + 0.75 * (progress || 0) : progress;
+    waveProgress = reopened
+      ? 25 + 0.75 * (deadline.elapsed ?? progress ?? 0)
+      : (deadline.elapsed ?? progress);
   return (
-    <div className={`compact-trace ${done ? "achieved" : ""}`}>
+    <div
+      className={`compact-trace deadline-${deadline.tone} ${done ? "achieved" : ""}`}
+    >
       <div className="compact-goal-line">
         <button
           className="compact-goal"
@@ -313,7 +346,15 @@ function CompactTrace({ goal, open, locked }) {
         </span>
       </div>
       <div className="compact-rail checkpoint-rail">
-        <ProgressWave progress={waveProgress} />
+        <ProgressWave progress={waveProgress} preserved={reopened ? 25 : 0} />
+        {!done && deadline.dueDate && (
+          <span
+            className="deadline-today"
+            style={{ left: `${waveProgress}%` }}
+            title={`Today ${dateLabel(date)} / ${deadline.label}`}
+            aria-label={`Today ${dateLabel(date)} / ${deadline.label}`}
+          />
+        )}
         <span className="compact-start" aria-hidden="true" />
         {reopened && (
           <button
@@ -338,18 +379,21 @@ function CompactTrace({ goal, open, locked }) {
       </div>
       <div className="compact-dates">
         <span>
-          {reopened
-            ? `Reopened ${dateLabel(reopened.date)}`
-            : goal.startDate
-              ? dateLabel(goal.startDate)
-              : "Start not recorded"}
+          {deadline.dueDate && !done
+            ? `Today ${dateLabel(date)}`
+            : reopened
+              ? `Reopened ${dateLabel(reopened.date)}`
+              : goal.startDate
+                ? dateLabel(goal.startDate)
+                : "Start not recorded"}
         </span>
-        <span>
+        <span className="deadline-label" title={deadline.label}>
           {done
             ? `Achieved${completionDate(goal) ? ` ${dateLabel(completionDate(goal))}` : ""}`
             : goal.eta === "Live" && !goal.dueDate && !goal.targetWeek
               ? "Target not set"
               : `Target ${etaLabel(goal)}`}
+          {!done && deadline.dueDate && ` / ${deadline.label}`}
         </span>
       </div>
       <button
@@ -369,9 +413,9 @@ function CompactTrace({ goal, open, locked }) {
     </div>
   );
 }
-function GoalRow({ goal, data, open, edit, actor, reopen, locked }) {
+function GoalRow({ goal, data, open, edit, actor, reopen, locked, date }) {
   const lastEdit = data.history.find((e) => e.goalId === goal.id),
-    health = goalStatus(goal);
+    health = goalStatus(goal, date);
   return (
     <article
       className={`goal-row ${health === "achieved" ? "is-complete" : ""}`}
@@ -413,7 +457,7 @@ function GoalRow({ goal, data, open, edit, actor, reopen, locked }) {
         </div>
       </div>
       <div className="goal-journey">
-        <CompactTrace goal={goal} open={open} locked={locked} />
+        <CompactTrace goal={goal} open={open} locked={locked} date={date} />
       </div>
       <div className="goal-row-footer">
         <span className="owner-label">
@@ -544,6 +588,7 @@ function GoalDrawer({
   focusedUpdate,
   reopen,
   open,
+  date,
 }) {
   const [tab, setTab] = useState(mode === "timeline" ? "timeline" : "updates"),
     [editor, setEditor] = useState(
@@ -738,6 +783,7 @@ function GoalDrawer({
                     open(id, updateId);
                   }}
                   locked={!actor}
+                  date={date}
                 />
               </section>
             ) : tab === "history" ? (
@@ -868,6 +914,7 @@ function Register({ goals, data, open, locked }) {
 
 function App() {
   const [data, setData] = useState(null),
+    [date, setDate] = useState(today),
     [actor, setActor] = useState(null),
     [preview, setPreview] = useState(true),
     [error, setError] = useState(""),
@@ -913,6 +960,15 @@ function App() {
       return null;
     }
   }
+  useEffect(() => {
+    const tick = () => setDate(today());
+    const clock = setInterval(tick, 60000);
+    document.addEventListener("visibilitychange", tick);
+    return () => {
+      clearInterval(clock);
+      document.removeEventListener("visibilitychange", tick);
+    };
+  }, []);
   useEffect(() => {
     load();
     request("session")
@@ -986,7 +1042,7 @@ function App() {
     return (
       <div className="loading-page">
         <span className="brand-square">
-          AA
+          CG
           <span />
         </span>
         <h1>TrueMed LIS tracker</h1>
@@ -1020,7 +1076,8 @@ function App() {
         : filter === "achieved"
           ? currentProgress(g) === 100
           : filter === "attention"
-            ? ["overdue", "blocked", "at-risk"].includes(goalStatus(g))
+            ? ["overdue", "blocked", "at-risk"].includes(goalStatus(g, date)) ||
+              ["yellow", "orange", "red"].includes(deadlineState(g, date).tone)
             : true,
     )
     .filter((g) =>
@@ -1039,21 +1096,15 @@ function App() {
   return (
     <div className={`app compact-workspace ${locked ? "is-locked" : ""}`}>
       <header className="topbar">
-        <a
-          className="brand"
-          href={locked ? undefined : "https://www.alomariassociates.com"}
-          aria-disabled={locked || undefined}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <div className="brand">
           <span className="brand-square">
-            AA
+            CG
             <span />
           </span>
           <span>
-            Alomari Associates<small>PARTNER OPERATIONS</small>
+            Consultative Genomics<small>PARTNER OPERATIONS</small>
           </span>
-        </a>
+        </div>
         <div className="topbar-divider" />
         <span className="workspace-name">TrueMed LIS</span>
         <div className="topbar-right">
@@ -1353,12 +1404,13 @@ function App() {
                       Achieved
                     </span>
                     <span>
-                      <i className="current" />
-                      Current update
+                      <i className="due-yellow" />7 days
                     </span>
                     <span>
-                      <i className="planned" />
-                      Target
+                      <i className="due-orange" />3 days
+                    </span>
+                    <span>
+                      <i className="due-red" />1 day
                     </span>
                   </div>
                 </div>
@@ -1370,6 +1422,7 @@ function App() {
                       data={data}
                       actor={actor}
                       locked={locked}
+                      date={date}
                       open={open}
                       edit={(id) => open(id, null, "edit")}
                       reopen={reopen}
@@ -1425,6 +1478,7 @@ function App() {
           focusedUpdate={focusedUpdate}
           reopen={reopen}
           open={open}
+          date={date}
         />
       )}{" "}
       {(modal === "unlock" || reauth) && (

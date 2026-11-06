@@ -200,6 +200,78 @@
   text-align: right;
   max-width: 110px;
 }
+.deadline-green {
+  --deadline-color: #7effb5;
+  --deadline-glow: #40ec8e60;
+  --deadline-highlight: #d4ffe5;
+  --deadline-base: #366f6080;
+}
+.deadline-yellow {
+  --deadline-color: #f3d755;
+  --deadline-glow: #f3d75560;
+  --deadline-highlight: #fff3b2;
+  --deadline-base: #f3d75545;
+}
+.deadline-orange {
+  --deadline-color: #ffa450;
+  --deadline-glow: #ff983e60;
+  --deadline-highlight: #ffe0b9;
+  --deadline-base: #ffa45045;
+}
+.deadline-red {
+  --deadline-color: #ff777c;
+  --deadline-glow: #ff596360;
+  --deadline-highlight: #ffd6da;
+  --deadline-base: #ff777c45;
+}
+.checkpoint-rail .wave-base {
+  stroke: var(--deadline-base, #366f6080);
+}
+.checkpoint-rail .wave-preserved {
+  stroke: #7effb5;
+  stroke-width: 3;
+}
+.checkpoint-rail .wave-preserved-glow {
+  stroke: #40ec8e60;
+  stroke-width: 10;
+  filter: blur(3px);
+}
+.compact-target:not(.completed) {
+  border-color: var(--deadline-color, #64e8cf);
+  color: var(--deadline-color, #64e8cf);
+}
+.deadline-today {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border: 1px solid #102b34;
+  border-radius: 50%;
+  background: var(--deadline-color, #7effb5);
+  box-shadow: 0 0 8px var(--deadline-glow, #40ec8e60);
+  pointer-events: none;
+}
+.compact-trace .compact-dates > .deadline-label,
+.roadmap-board .trace-labels > .deadline-label {
+  color: var(--deadline-color, #b4dace);
+}
+.trace .goal-checkpoint:not(.completed) {
+  border-color: var(--deadline-color, #64e8cf49);
+}
+.trace .goal-checkpoint:not(.completed) .checkpoint-node {
+  border-color: var(--deadline-color, #64e8cf);
+  color: var(--deadline-color, #64e8cf);
+}
+.roadmap-legend .due-yellow {
+  background: #f3d755;
+}
+.roadmap-legend .due-orange {
+  background: #ffa450;
+}
+.roadmap-legend .due-red {
+  background: #ff777c;
+}
 .compact-rail.checkpoint-rail {
   position: relative;
   inset: auto;

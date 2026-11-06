@@ -280,18 +280,18 @@
   stroke-width: 2;
 }
 .checkpoint-rail .wave-glow {
-  stroke: #40ec8e60;
+  stroke: var(--deadline-glow, #40ec8e60);
   stroke-width: 10;
   filter: blur(3px);
 }
 .checkpoint-rail .trace-complete {
-  stroke: #7effb5;
+  stroke: var(--deadline-color, #7effb5);
   stroke-width: 3;
   stroke-dasharray: none;
   animation: none;
 }
 .checkpoint-rail .wave-glint {
-  stroke: #d4ffe5;
+  stroke: var(--deadline-highlight, #d4ffe5);
   stroke-width: 2;
   stroke-dasharray: 18 225;
   animation: roadmap-flow 9s linear infinite;

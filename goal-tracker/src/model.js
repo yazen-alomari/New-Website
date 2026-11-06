@@ -49,6 +49,64 @@ export const currentProgress = (goal) =>
         u.progress !== null && u.order >= (goal.reopenings?.at(-1)?.order || 0),
     )
     .at(-1)?.progress ?? (goal.phase === "live" ? 100 : null);
+export function deadlineState(goal, date = today()) {
+  const dueDate =
+    goal.dueDate || (goal.targetWeek ? offsetDay(goal.targetWeek, 6) : "");
+  if (currentProgress(goal) === 100)
+    return {
+      tone: "achieved",
+      dueDate,
+      daysLeft: null,
+      elapsed: 100,
+      label: "Achieved",
+    };
+  if (!dueDate)
+    return {
+      tone: "unscheduled",
+      dueDate: "",
+      daysLeft: null,
+      elapsed: null,
+      label: "No deadline",
+    };
+  const daysLeft = Math.round(dayNumber(dueDate) - dayNumber(date));
+  // Unknown starts use a fixed two-week countdown window, not an invented work start.
+  const start =
+    goal.reopenings?.at(-1)?.date || goal.startDate || offsetDay(dueDate, -14);
+  const duration = dayNumber(dueDate) - dayNumber(start);
+  const elapsed =
+    duration > 0
+      ? Math.max(
+          0,
+          Math.min(
+            100,
+            (100 * (dayNumber(date) - dayNumber(start))) / duration,
+          ),
+        )
+      : date >= dueDate
+        ? 100
+        : 0;
+  return {
+    dueDate,
+    daysLeft,
+    elapsed,
+    tone:
+      daysLeft <= 1
+        ? "red"
+        : daysLeft <= 3
+          ? "orange"
+          : daysLeft <= 7
+            ? "yellow"
+            : "green",
+    label:
+      daysLeft < 0
+        ? `${-daysLeft} ${daysLeft === -1 ? "day" : "days"} overdue`
+        : daysLeft === 0
+          ? "Due today"
+          : daysLeft === 1
+            ? "Due tomorrow"
+            : `${daysLeft} days left`,
+  };
+}
 export function goalStatus(goal, date = today()) {
   if (currentProgress(goal) === 100) return "achieved";
   if (goal.health === "blocked") return "blocked";
