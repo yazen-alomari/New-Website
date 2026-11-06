@@ -60,6 +60,7 @@ import {
 import { Unlock, GoalForm, UpdateForm, ReopenForm } from "./forms.jsx";
 import "./style.css";
 import "./roadmap.css";
+import "./compact.css";
 
 const progressWavePath =
   "M 0 20" +
@@ -284,6 +285,90 @@ function Trace({ goal, open, locked }) {
     </div>
   );
 }
+function CompactTrace({ goal, open, locked }) {
+  const progress = currentProgress(goal),
+    latest = orderedUpdates(goal).at(-1),
+    reopened = goal.reopenings?.at(-1),
+    done = progress === 100,
+    outcome = goal.requirements || goal.outcome,
+    waveProgress = reopened ? 25 + 0.75 * (progress || 0) : progress;
+  return (
+    <div className={`compact-trace ${done ? "achieved" : ""}`}>
+      <div className="compact-goal-line">
+        <button
+          className="compact-goal"
+          disabled={locked}
+          title={outcome}
+          aria-label={`View goal for ${goal.account}: ${outcome}`}
+          onClick={() => open(goal.id)}
+        >
+          {outcome}
+        </button>
+        <span className={`compact-progress ${done ? "achieved-text" : ""}`}>
+          {done
+            ? "Achieved"
+            : progress === null
+              ? "Unscored"
+              : `${progress}%${reopened ? " of reopened work" : " complete"}`}
+        </span>
+      </div>
+      <div className="compact-rail checkpoint-rail">
+        <ProgressWave progress={waveProgress} />
+        <span className="compact-start" aria-hidden="true" />
+        {reopened && (
+          <button
+            className="compact-milestone previous-completion"
+            disabled={locked}
+            title={`Previously completed ${reopened.completedDate ? dateLabel(reopened.completedDate, true) : ""}: ${reopened.completedOutcome}`}
+            aria-label={`Previously completed ${reopened.completedDate ? dateLabel(reopened.completedDate, true) : "milestone"}`}
+            onClick={() => open(goal.id, reopened.completedUpdateId)}
+          >
+            <Check size={10} />
+          </button>
+        )}
+        <button
+          className={`compact-target ${done ? "completed" : ""}`}
+          disabled={locked}
+          aria-label={`View timeline for ${goal.account} ${goal.scope}`}
+          title="View timeline"
+          onClick={() => open(goal.id, null, "timeline")}
+        >
+          {done ? <Check size={10} /> : <Flag size={10} />}
+        </button>
+      </div>
+      <div className="compact-dates">
+        <span>
+          {reopened
+            ? `Reopened ${dateLabel(reopened.date)}`
+            : goal.startDate
+              ? dateLabel(goal.startDate)
+              : "Start not recorded"}
+        </span>
+        <span>
+          {done
+            ? `Achieved${completionDate(goal) ? ` ${dateLabel(completionDate(goal))}` : ""}`
+            : goal.eta === "Live" && !goal.dueDate && !goal.targetWeek
+              ? "Target not set"
+              : `Target ${etaLabel(goal)}`}
+        </span>
+      </div>
+      <button
+        className="compact-note"
+        disabled={locked}
+        title={latest?.note || goal.status}
+        aria-label={`Read update for ${goal.account}: ${latest?.note || goal.status}`}
+        onClick={() => open(goal.id, latest?.id)}
+      >
+        <MessageSquare size={12} />
+        <span>{latest?.note || goal.status}</span>
+        <TeamBadge
+          id={latest?.editor?.team || latest?.actor.team || goal.team}
+          small
+        />
+      </button>
+    </div>
+  );
+}
 function GoalRow({ goal, data, open, edit, actor, reopen, locked }) {
   const lastEdit = data.history.find((e) => e.goalId === goal.id),
     health = goalStatus(goal);
@@ -305,7 +390,9 @@ function GoalRow({ goal, data, open, edit, actor, reopen, locked }) {
               {goal.account}
               <ArrowUpRight size={13} />
             </button>
-            <span className="scope-label">{goal.scope}</span>
+            <span className="scope-label" title={goal.scope}>
+              {goal.scope}
+            </span>
           </div>
         </div>
         <h2>
@@ -313,7 +400,6 @@ function GoalRow({ goal, data, open, edit, actor, reopen, locked }) {
             {goal.title}
           </button>
         </h2>
-        <p className="goal-outcome">{goal.requirements || goal.outcome}</p>
         <div className="row-badges">
           <span className={`status-badge phase-${goal.phase}`}>
             <i />
@@ -327,42 +413,45 @@ function GoalRow({ goal, data, open, edit, actor, reopen, locked }) {
         </div>
       </div>
       <div className="goal-journey">
-        <Trace goal={goal} open={open} locked={locked} />
+        <CompactTrace goal={goal} open={open} locked={locked} />
       </div>
       <div className="goal-row-footer">
-        <span>
-          <CalendarDays size={13} />
-          <b>ETA</b> {etaLabel(goal)}
-        </span>
         <span className="owner-label">
           Owner <TeamBadge id={goal.team} small />
         </span>
-        <div className="footer-spacer" />
         {lastEdit && (
           <span className="last-edit">
             Edited by <TeamBadge id={lastEdit.actor.team} small />
           </span>
         )}
-        {actor && (
-          <button
+        <div className="row-actions">
+          {actor && (
+            <button
+              disabled={locked}
+              className="text-button"
+              onClick={() => edit(goal.id)}
+            >
+              <Pencil size={12} />
+              Edit
+            </button>
+          )}
+          {health === "achieved" && !goal.archived && (
+            <button
+              disabled={locked}
+              className="reopen-button"
+              onClick={() => reopen(goal.id)}
+            >
+              <RotateCcw size={13} />
+              Reopen
+            </button>
+          )}
+          <IconButton
+            icon={ArrowUpRight}
+            label={`Open ${goal.account} ${goal.scope}`}
             disabled={locked}
-            className="text-button"
-            onClick={() => edit(goal.id)}
-          >
-            <Pencil size={12} />
-            Edit
-          </button>
-        )}
-        {health === "achieved" && !goal.archived && (
-          <button
-            disabled={locked}
-            className="reopen-button"
-            onClick={() => reopen(goal.id)}
-          >
-            <RotateCcw size={13} />
-            Reopen
-          </button>
-        )}
+            onClick={() => open(goal.id)}
+          />
+        </div>
       </div>
     </article>
   );
@@ -454,8 +543,9 @@ function GoalDrawer({
   load,
   focusedUpdate,
   reopen,
+  open,
 }) {
-  const [tab, setTab] = useState("updates"),
+  const [tab, setTab] = useState(mode === "timeline" ? "timeline" : "updates"),
     [editor, setEditor] = useState(
       mode === "edit" ? "goal" : mode === "add" ? "update" : null,
     ),
@@ -567,6 +657,7 @@ function GoalDrawer({
                     onClick={() => {
                       setSelected(null);
                       setEditor("update");
+                      setTab("updates");
                     }}
                   >
                     Add update
@@ -605,6 +696,12 @@ function GoalDrawer({
             </div>
             <div className="detail-tabs">
               <button
+                className={tab === "timeline" ? "active" : ""}
+                onClick={() => setTab("timeline")}
+              >
+                Timeline
+              </button>
+              <button
                 className={tab === "updates" ? "active" : ""}
                 onClick={() => setTab("updates")}
               >
@@ -629,7 +726,21 @@ function GoalDrawer({
                 onReload={reload}
               />
             )}{" "}
-            {tab === "history" ? (
+            {tab === "timeline" ? (
+              <section
+                className="roadmap-board detailed-timeline"
+                aria-label="Workstream timeline"
+              >
+                <Trace
+                  goal={goal}
+                  open={(id, updateId) => {
+                    setTab("updates");
+                    open(id, updateId);
+                  }}
+                  locked={!actor}
+                />
+              </section>
+            ) : tab === "history" ? (
               <History events={events} />
             ) : (
               <div className="updates-feed">
@@ -926,7 +1037,7 @@ function App() {
   if (sort === "account")
     visible = [...visible].sort((a, b) => a.account.localeCompare(b.account));
   return (
-    <div className={`app ${locked ? "is-locked" : ""}`}>
+    <div className={`app compact-workspace ${locked ? "is-locked" : ""}`}>
       <header className="topbar">
         <a
           className="brand"
@@ -989,7 +1100,6 @@ function App() {
             <h1>
               TrueMed LIS tracker<span className="heading-period">.</span>
             </h1>
-            <p>Workstreams, goals & delivery milestones</p>
           </div>
           <div className="heading-actions">
             <div className="export-control">
@@ -1039,6 +1149,8 @@ function App() {
             <Button
               icon={Plus}
               primary
+              aria-label="New workstream"
+              title="New workstream"
               disabled={locked}
               onClick={() => setModal("new")}
             >
@@ -1054,7 +1166,6 @@ function App() {
               Workstreams
             </span>
             <strong>{active.length.toString().padStart(2, "0")}</strong>
-            <small>Across all accounts</small>
           </div>
           <div>
             <span>
@@ -1064,7 +1175,6 @@ function App() {
             <strong className="green-text">
               {live.length.toString().padStart(2, "0")}
             </strong>
-            <small>Including live enhancements</small>
           </div>
           <div>
             <span>
@@ -1072,7 +1182,6 @@ function App() {
               Goals achieved
             </span>
             <strong>{achieved.length.toString().padStart(2, "0")}</strong>
-            <small>Production milestones delivered</small>
           </div>
           <div>
             <span>
@@ -1090,11 +1199,6 @@ function App() {
                   )
                 : "Not set"}
             </strong>
-            <small>
-              {scheduled.length
-                ? scheduled[0].account
-                : "Awaiting target dates"}
-            </small>
           </div>
         </div>
         <div className="view-tabs">
@@ -1241,10 +1345,7 @@ function App() {
               >
                 <div className="roadmap-heading">
                   <div>
-                    <span className="eyebrow">
-                      TRUEMED LIS / INTEGRATION ROADMAP
-                    </span>
-                    <h2>Workstreams. Updates. Goals.</h2>
+                    <h2>Integration roadmap</h2>
                   </div>
                   <div className="roadmap-legend">
                     <span>
@@ -1323,6 +1424,7 @@ function App() {
           load={load}
           focusedUpdate={focusedUpdate}
           reopen={reopen}
+          open={open}
         />
       )}{" "}
       {(modal === "unlock" || reauth) && (
