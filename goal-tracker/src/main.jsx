@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   Activity,
@@ -44,7 +44,6 @@ import {
   statusLabels,
   orderedUpdates,
   etaLabel,
-  wavePath,
   dayNumber,
 } from "./model.js";
 import {
@@ -59,17 +58,48 @@ import {
 } from "./ui.jsx";
 import { Unlock, GoalForm, UpdateForm } from "./forms.jsx";
 import "./style.css";
+import "./roadmap.css";
+
+const progressWavePath =
+  "M 0 20" +
+  Array.from(
+    { length: 40 },
+    (_, i) => ` Q ${i * 25 + 12.5} ${i % 2 ? 33 : 7} ${(i + 1) * 25} 20`,
+  ).join("");
+
+function ProgressWave({ progress, vertical = false }) {
+  const clip = useId();
+  return (
+    <svg
+      className={vertical ? "vertical-wave" : "horizontal-wave"}
+      viewBox={vertical ? "0 0 40 1000" : "0 0 1000 40"}
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <g transform={vertical ? "translate(40 0) rotate(90)" : undefined}>
+        <defs>
+          <clipPath id={clip}>
+            <rect width={10 * (progress || 0)} height="40" />
+          </clipPath>
+        </defs>
+        <path d={progressWavePath} className="wave-base" />
+        {progress !== null && progress > 0 && (
+          <g clipPath={`url(#${clip})`}>
+            <path d={progressWavePath} className="wave-glow" />
+            <path d={progressWavePath} className="trace-complete" />
+            <path d={progressWavePath} className="wave-glint" />
+          </g>
+        )}
+      </g>
+    </svg>
+  );
+}
 
 function Trace({ goal, open }) {
   const progress = currentProgress(goal),
     updates = orderedUpdates(goal),
-    latest = updates.at(-1),
+    checkpoints = updates.slice(-3),
     done = progress === 100;
-  const points = updates.reduce((all, u) => {
-    const key = u.progress ?? 0;
-    all.set(key, u);
-    return all;
-  }, new Map());
   return (
     <div className={`trace ${done ? "achieved" : ""}`}>
       <div className="trace-labels">
@@ -88,41 +118,99 @@ function Trace({ goal, open }) {
                   : `Target ${etaLabel(goal)}`}
         </span>
       </div>
-      <div className="trace-visual">
-        <svg viewBox="0 0 760 86" preserveAspectRatio="none" aria-hidden="true">
-          <path d={wavePath(20, 740, 43, 7)} className="trace-future" />
-          {progress !== null && progress > 0 && (
-            <path
-              d={wavePath(20, 20 + (720 * progress) / 100, 43, 7)}
-              className="trace-complete"
-            />
-          )}
-        </svg>
-        <span className="start-node" />
-        {[...points.entries()].map(([p, u]) => (
+      <div
+        className="checkpoint-track"
+        style={{ "--checkpoint-count": Math.max(1, checkpoints.length) + 1 }}
+      >
+        <div className="checkpoint-rail">
+          <ProgressWave progress={progress} />
+          <ProgressWave progress={progress} vertical />
+        </div>
+        {checkpoints.map((u, index) => (
           <button
             type="button"
             key={u.id}
-            className={`update-dot ${u.source ? "import-dot" : ""} ${p === 100 ? "at-end" : ""}`}
-            style={{ left: `${((20 + (720 * p) / 100) / 760) * 100}%` }}
+            className={`checkpoint ${u.progress === 100 ? "completed" : index === checkpoints.length - 1 ? "current" : "recorded"}`}
             onClick={() => open(goal.id, u.id)}
-            title={`${dateLabel(u.date)} · ${teamById(u.editor?.team || u.actor.team)?.name || "Source import"} · ${u.note}`}
             aria-label={`Read update for ${goal.account}: ${u.note}`}
+            aria-haspopup="dialog"
           >
-            <span />
+            <span className="checkpoint-node" aria-hidden="true">
+              {u.progress === 100 ? (
+                <Check size={12} />
+              ) : (
+                <Circle size={6} fill="currentColor" />
+              )}
+            </span>
+            <span className="checkpoint-caption">
+              {u.source ? "Status report" : "Progress update"}
+              <ArrowUpRight size={12} />
+            </span>
+            <strong>{dateLabel(u.date, true)}</strong>
+            <span className="checkpoint-note">{u.note}</span>
+            <span className="checkpoint-meta">
+              <TeamBadge id={u.editor?.team || u.actor.team} small />
+              {u.progress !== null && <span>{u.progress}%</span>}
+            </span>
           </button>
         ))}
-        <span className={`finish-node ${done ? "done" : ""}`}>
-          <Flag size={15} fill={done ? "currentColor" : "none"} />
-        </span>
-        {progress !== null && progress > 0 && progress < 100 && (
-          <span
-            className="progress-pin"
-            style={{ left: `${((20 + (720 * progress) / 100) / 760) * 100}%` }}
+        {!checkpoints.length && (
+          <button
+            type="button"
+            className="checkpoint current"
+            onClick={() => open(goal.id)}
+            aria-haspopup="dialog"
           >
-            {progress}%
-          </span>
+            <span className="checkpoint-node" aria-hidden="true">
+              <Circle size={6} fill="currentColor" />
+            </span>
+            <span className="checkpoint-caption">
+              Current status
+              <ArrowUpRight size={12} />
+            </span>
+            <strong>{phases[goal.phase]}</strong>
+            <span className="checkpoint-note">{goal.status}</span>
+            <span className="checkpoint-meta">
+              <TeamBadge id={goal.team} small />
+            </span>
+          </button>
         )}
+        <button
+          type="button"
+          className={`checkpoint goal-checkpoint ${done ? "completed" : "planned"}`}
+          onClick={() => open(goal.id)}
+          aria-label={`View goal for ${goal.account}: ${goal.outcome}`}
+          aria-haspopup="dialog"
+        >
+          <span className="checkpoint-node" aria-hidden="true">
+            <Flag size={11} />
+          </span>
+          <span className="checkpoint-caption">
+            {done ? "Goal achieved" : "Goal to achieve"}
+            <ArrowUpRight size={12} />
+          </span>
+          <strong>
+            {done && completionDate(goal)
+              ? dateLabel(completionDate(goal), true)
+              : goal.eta === "Live" && !goal.dueDate && !goal.targetWeek
+                ? "Target not set"
+                : etaLabel(goal)}
+          </strong>
+          <span className="checkpoint-note">{goal.outcome}</span>
+          <span className="checkpoint-meta">
+            {done ? (
+              <>
+                <CheckCheck size={13} />
+                Completed
+              </>
+            ) : (
+              <>
+                <Target size={13} />
+                Target outcome
+              </>
+            )}
+          </span>
+        </button>
       </div>
       <div className="trace-bottom">
         <span className={done ? "achieved-text" : "muted"}>
@@ -151,8 +239,7 @@ function Trace({ goal, open }) {
   );
 }
 function GoalRow({ goal, data, open, edit, actor }) {
-  const latest = orderedUpdates(goal).at(-1),
-    lastEdit = data.history.find((e) => e.goalId === goal.id),
+  const lastEdit = data.history.find((e) => e.goalId === goal.id),
     health = goalStatus(goal);
   return (
     <article
@@ -189,14 +276,6 @@ function GoalRow({ goal, data, open, edit, actor }) {
       </div>
       <div className="goal-journey">
         <Trace goal={goal} open={open} />
-        <div className="row-note">
-          <TeamBadge
-            id={latest?.editor?.team || latest?.actor.team || goal.team}
-            small
-          />
-          <p>{latest?.note || "No updates yet."}</p>
-          <span>{latest ? dateLabel(latest.date) : ""}</span>
-        </div>
       </div>
       <div className="goal-row-footer">
         <span>
@@ -297,7 +376,17 @@ function History({ events }) {
     </div>
   );
 }
-function GoalDrawer({ goal, data, actor, close, save, unlock, mode, load }) {
+function GoalDrawer({
+  goal,
+  data,
+  actor,
+  close,
+  save,
+  unlock,
+  mode,
+  load,
+  focusedUpdate,
+}) {
   const [tab, setTab] = useState("updates"),
     [editor, setEditor] = useState(
       mode === "edit" ? "goal" : mode === "add" ? "update" : null,
@@ -311,6 +400,12 @@ function GoalDrawer({ goal, data, actor, close, save, unlock, mode, load }) {
     await load();
     setVersion((v) => v + 1);
   };
+  useEffect(() => {
+    if (!focusedUpdate) return;
+    const note = document.getElementById(`update-${focusedUpdate}`);
+    note?.scrollIntoView({ block: "center" });
+    note?.focus({ preventScroll: true });
+  }, [focusedUpdate]);
   return (
     <Modal title={goal.account} close={close} drawer>
       <div className="drawer-content">
@@ -444,7 +539,12 @@ function GoalDrawer({ goal, data, actor, close, save, unlock, mode, load }) {
                 {orderedUpdates(goal)
                   .reverse()
                   .map((u) => (
-                    <article key={u.id}>
+                    <article
+                      key={u.id}
+                      id={`update-${u.id}`}
+                      className={focusedUpdate === u.id ? "focused-update" : ""}
+                      tabIndex={focusedUpdate === u.id ? -1 : undefined}
+                    >
                       <div className="note-track">
                         <span className={u.progress === 100 ? "complete" : ""}>
                           {u.progress === 100 ? <Check size={12} /> : <span />}
@@ -571,6 +671,7 @@ function App() {
     [modal, setModal] = useState(null),
     [reauth, setReauth] = useState(false),
     [selectedId, setSelectedId] = useState(null),
+    [focusedUpdate, setFocusedUpdate] = useState(null),
     [mode, setMode] = useState(null),
     [busy, setBusy] = useState(false),
     [exportMenu, setExportMenu] = useState(false);
@@ -643,6 +744,7 @@ function App() {
     }
   }
   function open(id, updateId, editMode) {
+    setFocusedUpdate(updateId || null);
     setSelectedId(id);
     setMode(editMode || null);
     setExportMenu(false);
@@ -956,7 +1058,9 @@ function App() {
                 </select>
               </div>
             </div>
-            <div className="list-caption">
+            <div
+              className={`list-caption ${tab === "timeline" ? "roadmap-caption" : ""}`}
+            >
               <span>{visible.length} WORKSTREAMS</span>
               <div>
                 <span>
@@ -990,18 +1094,45 @@ function App() {
             ) : tab === "register" ? (
               <Register goals={visible} data={data} open={open} />
             ) : (
-              <div className="goal-list">
-                {visible.map((g) => (
-                  <GoalRow
-                    key={g.id}
-                    goal={g}
-                    data={data}
-                    actor={actor}
-                    open={open}
-                    edit={(id) => open(id, null, "edit")}
-                  />
-                ))}
-              </div>
+              <section
+                className="roadmap-board"
+                aria-label="Workstream roadmap"
+              >
+                <div className="roadmap-heading">
+                  <div>
+                    <span className="eyebrow">
+                      TRUEMED LIS / INTEGRATION ROADMAP
+                    </span>
+                    <h2>Workstreams. Updates. Goals.</h2>
+                  </div>
+                  <div className="roadmap-legend">
+                    <span>
+                      <i className="completed" />
+                      Achieved
+                    </span>
+                    <span>
+                      <i className="current" />
+                      Current update
+                    </span>
+                    <span>
+                      <i className="planned" />
+                      Target
+                    </span>
+                  </div>
+                </div>
+                <div className="goal-list">
+                  {visible.map((g) => (
+                    <GoalRow
+                      key={g.id}
+                      goal={g}
+                      data={data}
+                      actor={actor}
+                      open={open}
+                      edit={(id) => open(id, null, "edit")}
+                    />
+                  ))}
+                </div>
+              </section>
             )}
           </>
         ) : (
@@ -1047,6 +1178,7 @@ function App() {
           unlock={() => setModal("unlock")}
           mode={mode}
           load={load}
+          focusedUpdate={focusedUpdate}
         />
       )}{" "}
       {(modal === "unlock" || reauth) && (

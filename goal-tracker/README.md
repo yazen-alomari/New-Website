@@ -10,6 +10,8 @@ The November 6, 2026 source report was imported separately into storage. It is n
 
 All three teams may edit all workstreams. Archiving is reversible. A read-only HTML export embeds current workstreams, updates and audit history without needing a server; it is a point-in-time snapshot, not a live shared database. JSON export retains the complete workspace, including archived records.
 
+The interactive roadmap follows the weekly update call theme: a dark grid, green progress waves and clickable checkpoint boxes. The three most recent updates appear beside the target outcome; the drawer retains every update. Cards show the update sequence, not a calendar scale. Wave length reflects recorded numeric progress only. On phones, checkpoints stack along a vertical rail, and reduced-motion preferences disable the traveling highlight.
+
 ## Local Development
 
 ```sh
