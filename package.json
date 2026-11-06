@@ -4,8 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev:goals": "pnpm build:goals && node goal-tracker/server.mjs",
+    "build:goals": "vite build --config goal-tracker/vite.config.js",
+    "test:goals": "node --test goal-tracker/*.test.mjs",
     "dev": "vite --host 127.0.0.1",
-    "build": "vite build && pnpm run build:mapit && pnpm run build:congen",
+    "build": "vite build && pnpm run build:mapit && pnpm run build:congen && pnpm run build:goals",
     "build:congen": "vite build --config congen/vite.config.js",
     "dev:congen": "vite --config congen/vite.config.js",
     "dev:congen-api": "node server/congen-dev.js",

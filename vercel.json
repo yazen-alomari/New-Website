@@ -5,6 +5,16 @@
   "outputDirectory": "dist",
   "headers": [
     {
+      "source": "/TrueMedLIStracker/:path*",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "same-origin" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'" }
+      ]
+    },
+    {
       "source": "/consultative-genomics/:path*",
       "headers": [
         { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" },
@@ -31,6 +41,9 @@
     }
   ],
   "rewrites": [
+    { "source": "/TrueMedLIStracker/api/:path*", "destination": "/api/goals/:path*" },
+    { "source": "/TrueMedLIStracker", "destination": "/TrueMedLIStracker/index.html" },
+    { "source": "/TrueMedLIStracker/", "destination": "/TrueMedLIStracker/index.html" },
     {
       "source": "/consultative-genomics/api/:path*",
       "destination": "/api/congen/:path*"
